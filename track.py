@@ -49,4 +49,4 @@ class Track:
         )
 
     def __str__(self):
-        return f"Matched '{self.title}' by '{self.artist}' on https://open.spotify.com/track/{self.id}:\n{self.matched_section}"
+        return f"Matched '{self.title}' by '{self.artist}' on {self.timestamped_lyrics[self.matched_section_id]['startTimeMs']} Ms of https://open.spotify.com/track/{self.id}:\n{self.matched_section}"
