@@ -15,9 +15,14 @@ def main(url: Optional[str] = None, search_prompt: Optional[str] = None):
 
     matched_track_by_desc = None
 
-    # You can uncomment and implement image description retrieval if needed
-    # if image_url:
-    #     ...
+    # ===========================================================================
+    # SÓ DESCOMENTE SE REALMENTE PRECISAR PRA NAO GASTAR OS CREDITOS DA API
+    # ===========================================================================
+    #if (url != None):
+    #   (description, tags) = image_describer.get_image_description(url)
+    #   matched_track_by_desc = get_matching_tracks(description, 4, False)
+    #   matched_track_by_tags = get_matching_tracks(" ".join(tags), 4, False)
+    #   matched_track_by_both = get_matching_tracks(f"{description} {' '.join(tags)})", 4, False)
 
     if search_prompt:
         try:
@@ -26,7 +31,7 @@ def main(url: Optional[str] = None, search_prompt: Optional[str] = None):
             return {'error': str(e)}
 
     else:
-        matched_track_by_desc = get_matching_tracks(description, 1, False)
+        matched_track_by_desc = get_matching_tracks(description, 4, False)
         # matched_track_by_tags = get_matching_tracks(" ".join(tags), 4, False)
         # matched_track_by_both = get_matching_tracks(f"{description} {' '.join(tags)})", 4, False)
 
