@@ -1,8 +1,16 @@
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from lyrics_searcher import get_matching_tracks
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can replace * with your allowed origins
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get('/')
 def test():
