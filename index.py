@@ -5,7 +5,11 @@ from lyrics_searcher import get_matching_tracks
 app = FastAPI()
 
 @app.get('/')
-def greet(url: Optional[str] = None, search_prompt: Optional[str] = None):
+def test():
+    return 'foi'
+
+@app.get('/api')
+def main(url: Optional[str] = None, search_prompt: Optional[str] = None):
     description = "a big building in a city"
     tags = ['sky', 'outdoor', 'city', 'background', 'harbor', 'skyscraper']
 
