@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from lyrics_searcher import get_matching_tracks
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -14,7 +15,7 @@ app.add_middleware(
 
 @app.get('/')
 def test():
-    return 'foi'
+    return FileResponse("test.html")
 
 @app.get('/api')
 def main(url: Optional[str] = None, search_prompt: Optional[str] = None):
