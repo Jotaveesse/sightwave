@@ -1,4 +1,4 @@
-import lyrics_searcher
+from  lyrics_searcher import get_matching_tracks
 import image_describer
 import sys
 
@@ -15,9 +15,9 @@ def main(image):
         return
     
     # just testing 3 different methods to see whats better
-    matched_track_by_desc = lyrics_searcher.get_matching_tracks(description, 4, False)
-    matched_track_by_tags = lyrics_searcher.get_matching_tracks(" ".join(tags), 4, False)
-    matched_track_by_both = lyrics_searcher.get_matching_tracks(f"{description} {' '.join(tags)})", 4, False)
+    matched_track_by_desc = get_matching_tracks(description, 4, False)
+    matched_track_by_tags = get_matching_tracks(" ".join(tags), 4, False)
+    matched_track_by_both = get_matching_tracks(f"{description} {' '.join(tags)})", 4, False)
 
     print('\nDescription Match')
     print(matched_track_by_desc)
