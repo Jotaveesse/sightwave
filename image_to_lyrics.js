@@ -1,20 +1,44 @@
-function requestLyrics() {
-    const inputField = document.getElementById('input-field');
-    const textArea = document.getElementById('text-area');
+var inputField;
+var textArea;
 
+window.onload = function(){
+    inputField = document.getElementById('input-field');
+    textArea = document.getElementById('text-area');
+};
+
+function requestLyricsFromLyrics() {
     const apiUrl = 'https://image-to-lyrics.vercel.app/api';
 
     const searchPrompt = inputField.value;
 
-    // Make a GET request to the API
     fetch(`${apiUrl}?search_prompt=${encodeURIComponent(searchPrompt)}`)
     .then(response => response.json())
     .then(data => {
-        // Update the text area with the result from the API
-        var resp = JSON.parse(data);
+        textArea.value = '';
+        data.tracks.forEach(element => {
+            if (element != null)
+                textArea.value += element.matched_section + '\n';
+        });
+        
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        textArea.value = 'An error occurred while fetching lyrics.';
+    });
+}
 
-        resp.tracks.forEach(element => {
-            textArea.value += element.matched_section + '\n';
+function requestLyricsFromImage() {
+    const apiUrl = 'https://image-to-lyrics.vercel.app/api';
+
+    const searchPrompt = inputField.value;
+
+    fetch(`${apiUrl}?url=${encodeURIComponent(searchPrompt)}`)
+    .then(response => response.json())
+    .then(data => {
+        textArea.value = '';
+        data.tracks.forEach(element => {
+            if (element != null)
+                textArea.value += element.matched_section + '\n';
         });
         
     })

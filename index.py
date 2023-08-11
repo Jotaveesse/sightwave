@@ -12,7 +12,7 @@ def test():
     return FileResponse("test.html")
 
 @app.get('/api')
-def main(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: Optional[int] = 4):
+def main(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: Optional[int] = 3):
     description = "a big building in a city"
     tags = ['sky', 'outdoor', 'city', 'background', 'harbor', 'skyscraper']
 

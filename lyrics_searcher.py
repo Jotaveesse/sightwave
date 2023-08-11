@@ -162,7 +162,7 @@ def get_matching_tracks(query, search_amount = 5 , with_timestamp=True):
             lyric.id = id
             lyrics_with_ids.append(lyric)
 
-        print(f'Track: {track[0]}')
+        #print(f'Track: {track[0]}')
 
     if len(lyrics_with_ids) == 0:
         return None
