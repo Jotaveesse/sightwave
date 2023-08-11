@@ -11,7 +11,12 @@ function requestLyrics() {
     .then(response => response.json())
     .then(data => {
         // Update the text area with the result from the API
-        textArea.value = data;
+        var resp = JSON.parse(data);
+
+        resp.tracks.forEach(element => {
+            textArea.value += element.matched_section + '\n';
+        });
+        
     })
     .catch(error => {
         console.error('Error:', error);
