@@ -11,6 +11,10 @@ app = FastAPI()
 def test():
     return FileResponse("test.html")
 
+@app.get('/image_to_lyrics.js')
+def test2():
+    return FileResponse("image_to_lyrics.js")
+
 @app.get('/api')
 def main(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: Optional[int] = 3):
     description = "a big building in a city"
