@@ -1,49 +1,81 @@
 var inputField;
 var textArea;
+var embedTemplate;
+const apiUrl = 'https://image-to-lyrics.vercel.app/api';
 
-window.onload = function(){
+window.onload = function () {
     inputField = document.getElementById('input-field');
     textArea = document.getElementById('text-area');
+    embedTemplate = document.getElementById('embed-iframe-template');
 };
 
-function requestLyricsFromLyrics() {
-    const apiUrl = 'https://image-to-lyrics.vercel.app/api';
-
-    const searchPrompt = inputField.value;
-
-    fetch(`${apiUrl}?search_prompt=${encodeURIComponent(searchPrompt)}`)
-    .then(response => response.json())
-    .then(data => {
-        textArea.value = '';
-        data.tracks.forEach(element => {
-            if (element != null)
-                textArea.value += element.matched_section + '\n';
-        });
-        
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        textArea.value = 'An error occurred while fetching lyrics.';
-    });
+function createEmbed(trackId) {
+    var embed = embedTemplate.content.cloneNode(true);
+    var clonedIframe = embed.querySelector('iframe');
+    clonedIframe.src =  clonedIframe.src.replace('TRACKID', trackId)
+    
+    document.body.appendChild(clonedIframe);
 }
 
 function requestLyricsFromImage() {
-    const apiUrl = 'https://image-to-lyrics.vercel.app/api';
+    queryParams = {
+        url: inputField.value
+    }
+    getRequest(apiUrl, queryParams).then(data => {
+        displayTracks(data.tracks);
 
-    const searchPrompt = inputField.value;
-
-    fetch(`${apiUrl}?url=${encodeURIComponent(searchPrompt)}`)
-    .then(response => response.json())
-    .then(data => {
-        textArea.value = '';
-        data.tracks.forEach(element => {
-            if (element != null)
-                textArea.value += element.matched_section + '\n';
-        });
-        
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        textArea.value = 'An error occurred while fetching lyrics.';
+    }).catch(error => {
+        textArea.value = 'An error occurred while fetching lyrics: ' + error;
     });
+}
+
+function requestLyricsFromLyrics() {
+    queryParams = {
+        search_prompt:  inputField.value
+    }
+    getRequest(apiUrl, queryParams).then(data => {
+        displayTracks(data.tracks);
+        
+    }).catch(error => {
+        textArea.value = 'An error occurred while fetching lyrics: ' + error;
+    });
+}
+
+function displayTracks(tracks) {
+    var iframes = Array.from(document.getElementsByClassName('embed-iframe'));
+    iframes.forEach(element => {
+        element.remove();
+    });
+    
+    textArea.value = '';
+    
+    console.log(tracks);
+
+    tracks.forEach(element => {
+
+        if (element != null) {
+            createEmbed(element.id);
+            textArea.value += element.matched_section + '\n';
+        }
+    });
+}
+
+function getRequest(url, queryParams = {}) {
+    const queryString = Object.keys(queryParams)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
+        .join('&');
+
+    const fullUrl = queryString ? `${url}?${queryString}` : url;
+
+    return fetch(fullUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Error making GET request:', error);
+            throw error;
+        });
 }

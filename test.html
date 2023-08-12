@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image To Lyrics</title>
     <script src="image_to_lyrics.js"></script>
 </head>
-<body>    
+
+<body>
     <input type="text" id="input-field" placeholder="Texto">
     <button id="submit-image-button" onclick="requestLyricsFromImage()">Pesquisar Imagem</button>
     <button id="submit-lyrics-button" onclick="requestLyricsFromLyrics()">Pesquisar Letras</button>
     <textarea id="text-area"></textarea>
 
+    <template id="embed-iframe-template">
+        <iframe class="embed-iframe" style="border-radius:12px"
+            src="https://open.spotify.com/embed/track/TRACKID?utm_source=generator&theme=0" width="100%"
+            height="200" frameBorder="0" allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
+        </iframe>
+    </template>
 </body>
+
 </html>
