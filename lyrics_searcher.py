@@ -28,17 +28,21 @@ def make_get_request(url, params=None, headers=None):
         return None
 
 def get_access_token():
+    global keys
+    with open('keys.json') as file:
+        keys = json.load(file)
     data = {
         "grant_type": "client_credentials",
         "client_id": keys['spotify_client_id'],
         "client_secret": keys['spotify_client_secret']
     }
-
+    
     try:
         response = requests.post(SPOTIFY_REQUEST_URL, data=data)
 
         if response.status_code == 200:
             response_data = response.json()
+            
             return response_data["access_token"]
         else:
             print(f"Post request failed with status code: {response.status_code}")
