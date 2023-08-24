@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 
 load_dotenv("keys.env")
 
-SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
-SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
+SPOTIFY_CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
+SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
 MUSIX_API_KEY = os.getenv("MUSIX_API_KEY")
 
 TRACK_SEARCH_URL =  os.getenv("TRACK_SEARCH_URL")

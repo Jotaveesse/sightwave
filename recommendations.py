@@ -92,7 +92,7 @@ def get_recommendations(
 
 if __name__ == "__main__":
     # source = https://www.doglife.com.br/site/assets/images/cao.png
-
+    '''
     tracks = get_recommendations(
         genres=["acoustic", "chill", "indie", "pop", "folk"],
         acousticness=0.15,
@@ -105,7 +105,7 @@ if __name__ == "__main__":
         tempo=100,
         valence=0.8,
     )
-
+    '''
     # source = https://t3.ftcdn.net/jpg/05/61/99/50/360_F_561995097_a0dHcJrC2lCdOj6CBp6xBeGYv0hCsMyM.jpg
     """
     tracks = get_recommendations(
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     """
 
     # source = https://media.istockphoto.com/id/1138722351/pt/foto/new-york-city-traffic.jpg?s=612x612&w=0&k=20&c=kndH14Zqf7iOIzE8ZFbpNz1ZkQOGmqS7YZ_FZXg8Eio=
-    """tracks = get_recommendations(
+    tracks = get_recommendations(
         genres=['pop', 'electronic', 'dance', 'hip-hop', 'indie'],
         acousticness=0.1,  # Reflecting the urban environment's noise level
         danceability=0.7,  # Matching the lively and bustling scene
@@ -135,6 +135,6 @@ if __name__ == "__main__":
         tempo=120,  # Corresponding to the brisk pace of city life
         valence=0.6  # Reflecting the mix of busyness and vibrancy
     )
-    """
+    
     for track in tracks:
         print(f'https://open.spotify.com/track/{track["id"]}')
