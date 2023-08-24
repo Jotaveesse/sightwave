@@ -2,14 +2,21 @@ import requests
 import json
 import sys
 import re
+import os
 from track import Track
+from dotenv import load_dotenv
 
-TRACK_SEARCH_URL = "http://api.musixmatch.com/ws/1.1/track.search"
-SPOTIFY_REQUEST_URL = "https://accounts.spotify.com/api/token"
-SPOTIFY_SEARCH_URL = "https://api.spotify.com/v1/search"
-LYRICS_FETCH_URL = "https://spotify-lyric-api.herokuapp.com/"
+load_dotenv("keys.env")
 
-keys = None
+SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
+SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
+MUSIX_API_KEY = os.getenv("MUSIX_API_KEY")
+
+TRACK_SEARCH_URL =  os.getenv("TRACK_SEARCH_URL")
+SPOTIFY_REQUEST_URL = os.getenv("SPOTIFY_REQUEST_URL")
+SPOTIFY_SEARCH_URL = os.getenv("SPOTIFY_SEARCH_URL")
+LYRICS_FETCH_URL = os.getenv("LYRICS_FETCH_URL")
+
 access_token = None
 
 def make_get_request(url, params=None, headers=None):
@@ -28,13 +35,11 @@ def make_get_request(url, params=None, headers=None):
         return None
 
 def get_access_token():
-    global keys
-    with open('keys.json') as file:
-        keys = json.load(file)
+    
     data = {
         "grant_type": "client_credentials",
-        "client_id": keys['spotify_client_id'],
-        "client_secret": keys['spotify_client_secret']
+        "client_id": SPOTIFY_CLIENT_ID,
+        "client_secret":SPOTIFY_CLIENT_SECRET
     }
     
     try:
@@ -62,7 +67,7 @@ def clean_query(query):
 
 def get_tracks_from_lyrics(query, track_amount = 5, with_timestamp = True):
     search_params = {
-        "apikey": keys['musix_api_key'],
+        "apikey": MUSIX_API_KEY,
         "q_lyrics": query,
         "page_size": track_amount,
         "page": "1",
@@ -143,10 +148,6 @@ def get_lyrics_from_id(id):
         return None
 
 def get_matching_tracks(query, search_amount = 5 , with_timestamp=True):
-    global keys
-    with open('keys.json') as file:
-        keys = json.load(file)
-
     # removes special characters
     cleaned_query = re.sub(r'[^\w\s]', ' ', query)
 

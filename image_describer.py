@@ -3,11 +3,12 @@ import json
 import re
 import base64
 import os
+from dotenv import load_dotenv
 
-ASTICA_URL = 'https://vision.astica.ai/describe'
+load_dotenv("keys.env")
 
-with open('keys.json') as file:
-    keys = json.load(file)
+ASTICA_KEY = os.getenv("ASTICA_KEY")
+ASTICA_URL = os.getenv("ASTICA_URL")
     
 def make_post_request(endpoint, payload, timeout=30):
     try:
@@ -43,7 +44,7 @@ def get_image_description(image_path):
         image = path_to_base64(image_path)
     
     astica_params = {
-        'tkn': keys['astica_key'],
+        'tkn':  ASTICA_KEY,
         'modelVersion': '1.0_full', # '1.0_full', '2.0_full', or '2.1_full'
         'visionParams': 'description', # defines the parameters to be detected, some can cost a lot, so be careful
         'input': image,
