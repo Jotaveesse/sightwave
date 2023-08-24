@@ -1,22 +1,23 @@
-from fastapi import FastAPI, Request
-from typing import List, Optional
-from lyrics_searcher import get_matching_tracks
-from image_describer import get_image_description
-
+import os
+import fastapi
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from typing import List, Optional
+from backend.lyrics_searcher import get_matching_tracks
+from backend.image_describer import get_image_description
 
-app = FastAPI()
+app = fastapi.FastAPI()
+
+# makes all files in the dir frontend available on the /static/ path
+static_dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../frontend")
+app.mount("/static", StaticFiles(directory=static_dir_path), name="static")
 
 @app.get('/')
-def test():
-    return FileResponse("test.html")
-
-@app.get('/image_to_lyrics.js')
-def test2():
-    return FileResponse("image_to_lyrics.js")
+def index():
+    return FileResponse("frontend/index.html")
 
 @app.get('/api')
-def main(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: Optional[int] = 3):
+def api(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: Optional[int] = 3):
     description = "a big building in a city"
     tags = ['sky', 'outdoor', 'city', 'background', 'harbor', 'skyscraper']
 
