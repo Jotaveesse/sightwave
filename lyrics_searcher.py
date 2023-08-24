@@ -4,20 +4,20 @@ import sys
 import re
 import os
 from track import Track
+import spotipy
 from dotenv import load_dotenv
 
-load_dotenv("keys.env")
+load_dotenv()
 
-SPOTIFY_CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
-SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
+auth_manager = spotipy.oauth2.SpotifyClientCredentials()
+spotify = spotipy.Spotify(auth_manager=auth_manager)
+
 MUSIX_API_KEY = os.getenv("MUSIX_API_KEY")
 
 TRACK_SEARCH_URL =  os.getenv("TRACK_SEARCH_URL")
 SPOTIFY_REQUEST_URL = os.getenv("SPOTIFY_REQUEST_URL")
 SPOTIFY_SEARCH_URL = os.getenv("SPOTIFY_SEARCH_URL")
 LYRICS_FETCH_URL = os.getenv("LYRICS_FETCH_URL")
-
-access_token = None
 
 def make_get_request(url, params=None, headers=None):
     try:
@@ -34,33 +34,11 @@ def make_get_request(url, params=None, headers=None):
         print(f"An error occurred: {e}")
         return None
 
-def get_access_token():
-    
-    data = {
-        "grant_type": "client_credentials",
-        "client_id": SPOTIFY_CLIENT_ID,
-        "client_secret":SPOTIFY_CLIENT_SECRET
-    }
-    
-    try:
-        response = requests.post(SPOTIFY_REQUEST_URL, data=data)
-
-        if response.status_code == 200:
-            response_data = response.json()
-            
-            return response_data["access_token"]
-        else:
-            print(f"Post request failed with status code: {response.status_code}")
-            return None
-
-    except Exception as e:
-        print(e)
-        return None
-
 def clean_query(query):
     index = query.find("feat")
     if index != -1:
         query = query[:index]
+    
     query = query[:64] # limits the string to a max of 64 characters
     query = re.sub(r'[^\w\s]', ' ', query) # removes special characters
     return query
@@ -90,48 +68,8 @@ def get_tracks_from_lyrics(query, track_amount = 5, with_timestamp = True):
         return (None, None)
 
 def get_track_id(title, artist):
-    global access_token
-
-    spotify_search_params = {
-        "q":f"track:{clean_query(title)} artist:{clean_query(artist)}",
-        "type":"track",
-        "limit":1
-    }
-    
-    spotify_headers = {
-        "Authorization": f"Bearer {access_token}"
-    }
-    
-    try:
-        response = requests.get(SPOTIFY_SEARCH_URL, params=spotify_search_params, headers=spotify_headers)
-
-        if response.status_code == 200:
-            track_data = json.loads(response.text)
-
-            return track_data["tracks"]["items"][0]["id"]
-        
-        # 401 means token is invalid
-        elif response.status_code == 401:
-            print(f"Getting a new access token")
-
-            access_token = get_access_token()
-
-            spotify_headers = {
-                "Authorization": f"Bearer {access_token}"
-            }
-            
-            response_data = make_get_request(SPOTIFY_SEARCH_URL, spotify_search_params, spotify_headers)
-            track_data = json.loads(response_data)
-
-            return track_data["tracks"]["items"][0]["id"]
-        
-        else:
-            print(f"Request failed with status code: {response.status_code}")
-            return None
-        
-    except Exception as e:
-        print(f"General error while trying to fetch id for '{title}' by '{artist}': {e}")
-        return None
+    results = spotify.search(q=f"track:{clean_query(title)} artist:{clean_query(artist)}", type='track', limit='1')
+    return results["tracks"]["items"][0]["id"]
     
 def get_lyrics_from_id(id):
     lyrics_params = {

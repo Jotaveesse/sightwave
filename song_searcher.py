@@ -1,12 +1,10 @@
-import spotipy
-import os
 import sys
-from spotipy.oauth2 import SpotifyClientCredentials
+import spotipy
 from dotenv import load_dotenv
 
-load_dotenv("keys.env")
+load_dotenv()
 
-auth_manager = SpotifyClientCredentials(os.getenv("SPOTIPY_CLIENT_ID"), os.getenv("SPOTIPY_CLIENT_SECRET"))
+auth_manager = spotipy.oauth2.SpotifyClientCredentials()
 spotify = spotipy.Spotify(auth_manager=auth_manager)
 
 def get_tracks(query):
