@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse
 from typing import List, Optional
 from backend.lyrics_searcher import get_matching_tracks
 from backend.image_describer import get_image_description
+from backend.song_searcher import search_song
 
 app = fastapi.FastAPI()
 
@@ -18,11 +19,7 @@ print('mounted correctly')
 
 @app.get('/')
 def index():
-    return FileResponse("../frontend/index.html")
-
-@app.get('/image')
-def image():
-    return FileResponse("frontend/favicon.png")
+    return FileResponse("frontend/index.html")
 
 @app.get('/api')
 def api(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: Optional[int] = 3):
@@ -62,3 +59,7 @@ def api(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: O
         # 'matched_track_by_both': matched_track_by_both
     }
     return data
+
+@app.get('/search_song')
+def search_song_api(query: Optional[str] = None):
+    return search_song(query)
