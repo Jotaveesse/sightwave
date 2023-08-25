@@ -8,13 +8,17 @@ from backend.image_describer import get_image_description
 
 app = fastapi.FastAPI()
 
+print('loaded correctly')
 # makes all files in the dir frontend available on the /static/ path
 static_dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../frontend")
+print('got path correctly')
+
 app.mount("/static", StaticFiles(directory=static_dir_path), name="static")
+print('mounted correctly')
 
 @app.get('/')
 def index():
-    return FileResponse("index.html")
+    return FileResponse("frontend/index.html")
 
 @app.get('/api')
 def api(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: Optional[int] = 3):
