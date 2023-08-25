@@ -7,3 +7,5 @@ backend/__pycache__/song_searcher.cpython-311.pyc
 backend/__pycache__/track.cpython-311.pyc
 tmp/.cache
 .env
+
+.vercel

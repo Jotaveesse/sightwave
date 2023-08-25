@@ -1,33 +1,4 @@
-import os
-import spotipy
-from dotenv import load_dotenv
-
-load_dotenv()
-
-CACHE_LOCATION =  os.getenv("CACHE_LOCATION")
-
-auth_manager = spotipy.oauth2.SpotifyClientCredentials(
-    cache_handler=spotipy.CacheFileHandler(cache_path=CACHE_LOCATION)
-)
-spotify = spotipy.Spotify(auth_manager=auth_manager)
-
-def get_recommendations(features):
-    
-    results = spotify.recommendations(
-        seed_genres=features['genres'],
-        limit=3,
-        target_acousticness=features['acousticness'],
-        target_danceability=features['danceability'],
-        target_energy=features['energy'],
-        target_instrumentalness=features['instrumentalness'],
-        target_liveness=features['liveness'],
-        target_loudness=features['loudness'],
-        target_speechiness=features['speechiness'],
-        target_tempo=features['tempo'],
-        target_valence=features['valence']
-    )
-
-    return results['tracks']
+from package import spotify
 
 if __name__ == "__main__":
     # source = https://www.doglife.com.br/site/assets/images/cao.png
@@ -75,7 +46,7 @@ if __name__ == "__main__":
         'valence':0.6,  # Reflecting the mix of busyness and vibrancy
     }
 
-    tracks = get_recommendations(feats)
+    tracks = spotify.get_recommendations(feats)
 
     for track in tracks:
         print(f'https://open.spotify.com/track/{track["id"]}')

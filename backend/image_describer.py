@@ -1,37 +1,14 @@
-import requests
+from .package import requester as req
+from dotenv import load_dotenv
 import json
 import re
-import base64
 import os
-from dotenv import load_dotenv
 
-load_dotenv("keys.env")
+load_dotenv()
 
 ASTICA_KEY = os.getenv("ASTICA_KEY")
 ASTICA_URL = os.getenv("ASTICA_URL")
     
-def make_post_request(endpoint, payload, timeout=30):
-    try:
-        response = requests.post(endpoint, data=json.dumps(payload), timeout=timeout, headers={ 'Content-Type': 'application/json', })
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Post request failed with status code: {response.status_code}")
-            return None
-    except requests.exceptions.RequestException as e:
-        print(f"An error occurred: {e}")
-        return None
-
-# retrieves the file and transforms to base64
-def path_to_base64(image_path):
-    with open(image_path, 'rb') as file:
-        image_data = file.read()
-    
-    image_extension = os.path.splitext(image_path)[1]
-    image_base64 = f"data:image/{image_extension[1:]};base64,{base64.b64encode(image_data).decode('utf-8')}"
-
-    return image_base64
-
 def is_url(input_string):
     url_pattern = r"^(http|https|ftp)://.*"  # matches http, https, and ftp protocols
     return bool(re.match(url_pattern, input_string))
@@ -41,7 +18,7 @@ def get_image_description(image_path):
     if is_url(image_path):
         image = image_path
     else:
-        image = path_to_base64(image_path)
+        image = req.path_to_base64(image_path)
     
     astica_params = {
         'tkn':  ASTICA_KEY,
@@ -50,7 +27,7 @@ def get_image_description(image_path):
         'input': image,
     }
 
-    response = make_post_request(ASTICA_URL, astica_params)
+    response = req.make_post_request(ASTICA_URL, astica_params)
 
     if response == None:
         return None
