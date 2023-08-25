@@ -10,18 +10,18 @@ spotify = spotipy.Spotify(auth_manager=auth_manager)
 
 def get_tracks(query, amount=50):
     tracks = []
-    searches_left = amount
+    searches_done = 0
 
     batch_size = 50
 
     # max of 50 tracks per request, so we make multiple requests if we need  more than 50
-    while searches_left > 0:
-        current_batch_size = min(batch_size, searches_left)
-        results = spotify.search(q=f"{query}", type="track", limit=current_batch_size)
+    while searches_done < amount:
+        current_batch_size = min(batch_size, amount-searches_done)
+        results = spotify.search(q=f"{query}", type="track", limit=current_batch_size, offset=searches_done)
 
         tracks += results["tracks"]["items"]
 
-        searches_left -= current_batch_size
+        searches_done += current_batch_size
 
     return tracks
 
@@ -148,7 +148,7 @@ def search_song(query, features=[]):
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python song_searcher.py <query>")
-        search_song("smiling dog laying down")
+        search_song("a happy dog laying down")
     else:
         query = sys.argv[1]
         search_song(query)
