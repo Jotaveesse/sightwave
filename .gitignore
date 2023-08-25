@@ -1,2 +1,9 @@
 /.vscode
 /__pycache__
+backend/__pycache__/image_describer.cpython-311.pyc
+backend/__pycache__/index.cpython-311.pyc
+backend/__pycache__/lyrics_searcher.cpython-311.pyc
+backend/__pycache__/song_searcher.cpython-311.pyc
+backend/__pycache__/track.cpython-311.pyc
+tmp/.cache
+.env
