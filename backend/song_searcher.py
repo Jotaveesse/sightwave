@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-auth_manager = spotipy.oauth2.SpotifyClientCredentials()
+auth_manager = spotipy.oauth2.SpotifyClientCredentials(cache_handler=spotipy.CacheFileHandler(cache_path="tmp/.cache"))
 spotify = spotipy.Spotify(auth_manager=auth_manager)
 
 
@@ -140,9 +140,9 @@ def search_song(query, features=[]):
     track_list = get_tracks(f'{query} {" ".join(features["genres"])}', amount=200)
 
     if len(track_list) == 0:
-        print("no songs found for that query")
+        return("no songs found for that query")
     else:
-        print(most_similar_track(features, track_list)["external_urls"]["spotify"])
+        return(most_similar_track(features, track_list)["external_urls"]["spotify"])
 
 
 if __name__ == "__main__":
