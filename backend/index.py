@@ -18,7 +18,7 @@ print('mounted correctly')
 
 @app.get('/')
 def index():
-    return FileResponse("frontend/index.html")
+    return FileResponse("../frontend/index.html")
 
 @app.get('/image')
 def image():
