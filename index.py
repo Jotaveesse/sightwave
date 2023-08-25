@@ -10,15 +10,19 @@ app = fastapi.FastAPI()
 
 print('loaded correctly')
 # makes all files in the dir frontend available on the /static/ path
-static_dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../frontend")
+#static_dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../frontend")
 print('got path correctly')
 
-app.mount("/static", StaticFiles(directory=static_dir_path), name="static")
+#app.mount("/static", StaticFiles(directory=static_dir_path), name="static")
 print('mounted correctly')
 
 @app.get('/')
 def index():
     return FileResponse("frontend/index.html")
+
+@app.get('/image')
+def image():
+    return FileResponse("frontend/favicon.png")
 
 @app.get('/api')
 def api(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: Optional[int] = 3):
