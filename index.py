@@ -1,5 +1,6 @@
 import fastapi
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from backend.lyrics_search import search_track_by_lyrics
 from backend.features_search import search_track_by_features
 from backend.image_search import search_track_by_image
@@ -10,7 +11,7 @@ app = fastapi.FastAPI()
 # makes all files in the dir frontend available on the /static/ path
 #static_dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "/frontend")
 
-app.mount("/static", fastapi.staticfiles.StaticFiles(directory="frontend"), name="static")
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 @app.get('/')
 def index():
