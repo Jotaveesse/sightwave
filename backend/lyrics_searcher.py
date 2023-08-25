@@ -3,8 +3,8 @@ import json
 import sys
 import re
 import os
-from track import Track
 import spotipy
+from .track import Track
 from dotenv import load_dotenv
 
 load_dotenv()
