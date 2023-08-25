@@ -9,14 +9,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-auth_manager = spotipy.oauth2.SpotifyClientCredentials()
+CACHE_LOCATION =  os.getenv("CACHE_LOCATION")
+
+auth_manager = spotipy.oauth2.SpotifyClientCredentials(
+    cache_handler=spotipy.CacheFileHandler(cache_path=CACHE_LOCATION)
+)
 spotify = spotipy.Spotify(auth_manager=auth_manager)
 
 MUSIX_API_KEY = os.getenv("MUSIX_API_KEY")
-
 TRACK_SEARCH_URL =  os.getenv("TRACK_SEARCH_URL")
-SPOTIFY_REQUEST_URL = os.getenv("SPOTIFY_REQUEST_URL")
-SPOTIFY_SEARCH_URL = os.getenv("SPOTIFY_SEARCH_URL")
 LYRICS_FETCH_URL = os.getenv("LYRICS_FETCH_URL")
 
 def make_get_request(url, params=None, headers=None):

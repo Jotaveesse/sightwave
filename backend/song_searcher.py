@@ -1,10 +1,15 @@
 import sys
+import os
 import spotipy
 from dotenv import load_dotenv
 
 load_dotenv()
 
-auth_manager = spotipy.oauth2.SpotifyClientCredentials(cache_handler=spotipy.CacheFileHandler(cache_path="tmp/.cache"))
+CACHE_LOCATION =  os.getenv("CACHE_LOCATION")
+
+auth_manager = spotipy.oauth2.SpotifyClientCredentials(
+    cache_handler=spotipy.CacheFileHandler(cache_path=CACHE_LOCATION)
+)
 spotify = spotipy.Spotify(auth_manager=auth_manager)
 
 
