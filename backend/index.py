@@ -13,7 +13,7 @@ print('loaded correctly')
 #static_dir_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "/frontend")
 print('got path correctly')
 
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
+#app.mount("/static", StaticFiles(directory="frontend"), name="static")
 print('mounted correctly')
 
 @app.get('/')
