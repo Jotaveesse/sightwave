@@ -14,7 +14,7 @@ app.mount("/static", StaticFiles(directory=static_dir_path), name="static")
 
 @app.get('/')
 def index():
-    return FileResponse("frontend/index.html")
+    return FileResponse("index.html")
 
 @app.get('/api')
 def api(url: Optional[str] = None, search_prompt: Optional[str] = None,  pool: Optional[int] = 3):
