@@ -5,13 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image To Lyrics</title>
-    <script src="image_to_lyrics.js"></script>
+    <link rel="icon" type="image/png" href="static/favicon.png">
+    <script src="static/image_to_lyrics.js"></script>
 </head>
 
 <body>
     <input type="text" id="input-field" placeholder="Texto">
-    <button id="submit-image-button" onclick="requestLyricsFromImage()">Pesquisar Imagem</button>
-    <button id="submit-lyrics-button" onclick="requestLyricsFromLyrics()">Pesquisar Letras</button>
+    <button id="submit-lyrics-button" onclick="requestLyricsFromLyrics()">Pesquisar por letras</button>
+    <button id="submit-feats-button" onclick="requestLyricsFromFeats()">Pesquisar por features</button>
+    <button id="submit-image-button" onclick="requestLyricsFromImage()">Pesquisar por imagem</button>
     <textarea id="text-area"></textarea>
 
     <template id="embed-iframe-template">
