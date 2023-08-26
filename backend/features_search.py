@@ -1,4 +1,5 @@
 from .package import spotify
+from .package import track
 import sys
 
 def compare_features(features1, features2):
@@ -65,11 +66,13 @@ def search_track_by_features(query, features=[]):
     }
 
     track_list = spotify.get_tracks(f'{query} {" ".join(features["genres"])}', amount=200)
-
+    
     if len(track_list) == 0:
         return(None)
     else:
-        return(most_similar_track(features, track_list)["external_urls"]["spotify"])
+        track_id = most_similar_track(features, track_list)['id']
+        found_track = track.Track(id=track_id)
+        return found_track
 
 
 if __name__ == "__main__":

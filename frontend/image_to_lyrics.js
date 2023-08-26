@@ -1,7 +1,7 @@
 var inputField;
 var textArea;
 var embedTemplate;
-const apiUrl = 'https://image-to-lyrics.vercel.app/api/search/';
+const apiUrl = window.location.href+'api/search/';
 
 window.onload = function () {
     inputField = document.getElementById('input-field');
@@ -22,7 +22,7 @@ function requestLyricsFromImage() {
         url: inputField.value
     }
     getRequest(apiUrl+'image', queryParams).then(data => {
-        displayTracks(data.tracks);
+        displayTracks([data]);
 
     }).catch(error => {
         textArea.value = 'An error occurred while fetching lyrics: ' + error;
@@ -31,10 +31,10 @@ function requestLyricsFromImage() {
 
 function requestLyricsFromLyrics() {
     queryParams = {
-        search_prompt:  inputField.value
+        query:  inputField.value
     }
     getRequest(apiUrl+'lyrics', queryParams).then(data => {
-        displayTracks(data.tracks);
+        displayTracks([data]);
         
     }).catch(error => {
         textArea.value = 'An error occurred while fetching lyrics: ' + error;
@@ -43,10 +43,10 @@ function requestLyricsFromLyrics() {
 
 function requestLyricsFromFeats(){
     queryParams = {
-        search_prompt:  inputField.value
+        query:  inputField.value
     }
     getRequest(apiUrl+'features', queryParams).then(data => {
-        displayTracks(data.tracks);
+        displayTracks([data]);
         
     }).catch(error => {
         textArea.value = 'An error occurred while fetching lyrics: ' + error;
