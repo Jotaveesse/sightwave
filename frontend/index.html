@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="images/sightwave-logo2.png">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/loading.css">
-    <script src="static/image_to_lyrics.js"></script>
+    <script src="image_to_lyrics.js"></script>
 </head>
 
 <body>
@@ -31,18 +31,16 @@
                         <div id="url-input">
                             <input type="url">
                         </div>
-                            <button id="image-send-button">Enviar</button>
+                            <button id="url-send-button">Enviar</button>
                     </div>
                 </div>
 
-                <div id="image-display">
+                <div id="image-display" class="hidden">
                     <div id="image-display-top">
-
+                        <img id="image-display-area" src="#" alt="Uploaded Image">
                     </div>
                     <div id="image-display-bottom">
-                        <div id="image-send-button">
-
-                        </div>
+                        <button id="send-another-button">Enviar outra imagem</button>
                     </div>
                 </div>
             </div>
@@ -58,7 +56,7 @@
                             features</button>
                 </div>
 
-                <div id="loading-area">
+                <div id="loading-area" class="hidden">
                     <div id="loading-icon">
                         <div class="boxContainer">
                             <div class="box box1"></div>
@@ -89,7 +87,9 @@
 
                 </div>
                 <div id="lyrics-section">
+                    <div id="lyrics-text">
 
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,7 +102,7 @@
 
     <template id="embed-iframe-template">
         <iframe class="embed-iframe" style="border-radius:12px"
-            src="https://open.spotify.com/embed/track/TRACKID?utm_source=generator&theme=0" width="100%" height="200"
+            src="https://open.spotify.com/embed/track/TRACKID?utm_source=generator&theme=0" width="100%" height="100%"
             frameBorder="0" allowfullscreen=""
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
         </iframe>

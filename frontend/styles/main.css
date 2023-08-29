@@ -21,12 +21,15 @@ body {
 
 input {
     font-family: 'Queensides';
+    font-size: 1em;
     background-color:#444;
     color:white;
     width:100%;
     height:100%;
+    padding: 0px 12px;
     box-sizing: border-box;
     border: none;
+    border-radius: 0px 0px 0px 16px;
 }
 
 button {
@@ -40,6 +43,19 @@ button {
     margin: auto;
     border: none;
     border-radius: 8px;
+}
+
+button:hover{
+    filter: brightness(1.1);
+    cursor:pointer;
+}
+
+.hidden{
+    display:none !important;
+}
+
+.brightened{
+    filter: brightness(1.7);
 }
 
 #main {
@@ -68,7 +84,10 @@ button {
 
 #image-section {
     background-color: #242424;
-    height: 80%;
+    height: fit-content;
+    width: fit-content;
+    border-radius: 16px;
+    margin: 0 auto 0 auto;
 }
 
 #image-upload {
@@ -78,33 +97,36 @@ button {
 
 #image-upload-top {
     width: 100%;
-    height: 90%;
+    height: calc(100% - 40px);
 }
 
 #image-upload-bottom {
-    height: 10%;
+    height: 40px;
     width: 100%;
     display: flex;
 }
 
 #url-input {
-    width: 90%;
+    width: 85%;
     height: 100%;
 }
 
-#image-send-button {
-    width: 10%;
+#url-send-button {
+    width: 15%;
     height: 100%;
+    border-radius: 0px 0px 16px 0px;
 }
 
 #image-display {
-    display: none;
-    width: 100%;
-    height: 100%;
+    width: fit-content;
+    height: fit-content;
 }
 
 #image-display-top {
-    height: 90%;
+    display: flex;
+    height: fit-content;
+    width: fit-content;
+    margin: auto;
 }
 
 .drop_area{
@@ -128,19 +150,30 @@ button {
 	text-align: center;
 }
 .drop_area button{
-	height:20%;
+	height: 48px;
 	background-color:#444;
 }
 
 .drop_area img{
-	width:270px;
-	padding:18px;
+	width: 60%;
+	padding: 20%;
 	filter:invert(100%) brightness(33%);
 }
 
 #image-display-bottom {
     width: 100%;
-    height: 10%;
+    height: 48px;
+}
+
+#image-display-bottom button {
+    height: 100%;
+}
+
+#image-display-area{
+	max-height: 800px;
+	max-width: 100%;
+	margin: auto;
+	border-radius: 16px 16px 0px 0px;
 }
 
 #button-section {
@@ -150,7 +183,6 @@ button {
 
 #button-area {
     display: flex;
-    display: none;
     height: 100%;
     flex-wrap: wrap;
     padding: 0px 60px;
@@ -201,6 +233,8 @@ button {
 
 #track-section {
     background-color: #242424;
+    max-height: 800px;
+	border-radius: 16px
 }
 
 #embed-section {
@@ -208,7 +242,19 @@ button {
     height: 20%;
 }
 
+#lyrics-section::-webkit-scrollbar {
+    display: none;
+}
+
+#lyrics-section::-webkit-scrollbar-thumb {
+    display: none;
+}
+
 #lyrics-section {
     height: 80%;
+    font-size: 1.1em;
+    font-weight: 600;
     overflow-y: auto;
+    padding: 12px;
+    box-sizing: border-box;
 }
