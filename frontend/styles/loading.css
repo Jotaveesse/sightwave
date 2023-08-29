@@ -1,0 +1,154 @@
+
+@keyframes normal {
+    0%{
+      transform: scaleY(.3);
+    }
+    6.25%{
+      transform: scaleY(.7);
+    }
+    12.5%{
+      transform: scaleY(1.1);
+    }
+    18.75%{
+      transform: scaleY(1.5);
+    }
+    25%{
+      transform: scaleY(1.9);
+    }
+    31.25%{
+      transform: scaleY(2.3);
+    }
+    37.5%{
+      transform: scaleY(2);
+    }
+    43.75%{
+      transform: scaleY(1.7);
+    }
+    50%{
+      transform: scaleY(1.4);
+    }
+    56.25%{
+      transform: scaleY(1.1);
+    }
+    62.5%{
+      transform: scaleY(1.4);
+    }
+    68.75%{
+      transform: scaleY(1.7);
+    }
+    75%{
+      transform: scaleY(1.4);
+    }
+    81.25%{
+      transform: scaleY(1.1);
+    }
+    87.5%{
+      transform: scaleY(0.8);
+    }
+    93.75%{
+      transform: scaleY(0.6);
+    }
+    100%{
+      transform: scaleY(0.3);
+    }
+  }
+  .boxContainer{
+    display: flex;
+    justify-content: space-between;
+    height: 64px;
+    --boxSize: 8px;
+    --gutter: 5px;
+    width: calc((var(--boxSize) + var(--gutter)) * 16);
+    margin: auto;
+  }
+  
+  .box{
+    transform: scaleY(0);
+    height: 100%;
+    width: var(--boxSize);
+    background: #eee;
+    animation-duration: 4s;
+    animation-timing-function: ease-in;
+    animation-iteration-count: infinite;
+    border-radius: 8px;
+  }
+  
+  .box1{
+    animation-name: normal;
+    animation-delay: 0s;
+}
+
+.box2{
+    animation-name: normal;
+    animation-delay: 0.25s;
+}
+
+.box3{
+    animation-name: normal;
+    animation-delay: 0.5s;
+}
+
+.box4{
+    animation-name: normal;
+    animation-delay: 0.75s;
+}
+
+.box5{
+    animation-name: normal;
+    animation-delay: 1s;
+}
+
+.box6{
+    animation-name: normal;
+    animation-delay: 1.25s;
+}
+
+.box7{
+    animation-name: normal;
+    animation-delay: 1.5s;
+}
+
+.box8{
+    animation-name: normal;
+    animation-delay: 1.75s;
+}
+
+.box9{
+    animation-name: normal;
+    animation-delay: 2s;
+}
+
+.box10{
+    animation-name: normal;
+    animation-delay: 2.25s;
+}
+
+.box11{
+    animation-name: normal;
+    animation-delay: 2.5s;
+}
+
+.box12{
+    animation-name: normal;
+    animation-delay: 2.75s;
+}
+
+.box13{
+    animation-name: normal;
+    animation-delay: 3s;
+}
+
+.box14{
+    animation-name: normal;
+    animation-delay: 3.25s;
+}
+
+.box15{
+    animation-name: normal;
+    animation-delay: 3.5s;
+}
+
+.box16{
+    animation-name: normal;
+    animation-delay: 3.75s;
+  }
