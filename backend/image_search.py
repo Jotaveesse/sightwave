@@ -2,14 +2,21 @@ from  .lyrics_search import search_track_by_lyrics
 from  .image_describer import get_image_description
 
 def search_track_by_image(image, pool=5):
-    description = "a big building in a city"
+    caption = "a big building in a city"
     tags = ['sky', 'outdoor', 'city', 'background', 'harbor', 'skyscraper']
 
     # ===========================================================================
     # SÓ DESCOMENTE SE REALMENTE PRECISAR PRA NAO GASTAR OS CREDITOS DA API
     # ===========================================================================
-    #(description, tags) = get_image_description(image)
+    result = get_image_description(image)
 
-    matched_track = search_track_by_lyrics(f"{description} {' '.join(tags)})", pool, False)
+    caption = result.caption.content
+    tags= [tag.name for tag in result.tags]
+
+    query =f"{caption} {' '.join(tags)})"
+    print(query)
+    matched_track = search_track_by_lyrics(query, pool, False)
 
     return matched_track
+
+print(search_track_by_image("https://akm-img-a-in.tosshub.com/businesstoday/images/story/202307/ezgif-sixteen_nine_531.jpg"))

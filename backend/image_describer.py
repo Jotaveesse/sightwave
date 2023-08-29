@@ -1,60 +1,55 @@
-from .package import requester as req
-from dotenv import load_dotenv
-import json
-import re
+import azure.ai.vision as sdk
 import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
-ASTICA_KEY = os.getenv("ASTICA_KEY")
-ASTICA_URL = os.getenv("ASTICA_URL")
-    
-def is_url(input_string):
-    url_pattern = r"^(http|https|ftp)://.*"  # matches http, https, and ftp protocols
-    return bool(re.match(url_pattern, input_string))
+AZURE_URL = os.environ["AZURE_URL"]
+AZURE_KEY = os.getenv("AZURE_KEY")
 
 def get_image_description(image_path):
-    # accepts url or file path (JPG AND PNG ONLY) (USING FILE PATH COSTS MORE)
-    if is_url(image_path):
-        image = image_path
+    service_options = sdk.VisionServiceOptions(AZURE_URL,
+                                            AZURE_KEY)
+
+    vision_source = sdk.VisionSource(
+        url=image_path)
+
+    analysis_options = sdk.ImageAnalysisOptions()
+
+    analysis_options.features = (
+        sdk.ImageAnalysisFeature.CAPTION |
+        sdk.ImageAnalysisFeature.DENSE_CAPTIONS |
+        sdk.ImageAnalysisFeature.TAGS
+    )
+
+    image_analyzer = sdk.ImageAnalyzer(service_options, vision_source, analysis_options)
+
+    result = image_analyzer.analyze()
+
+    if result.reason == sdk.ImageAnalysisResultReason.ANALYZED:
+        
+        # if result.caption is not None:
+        #     print(" Caption:")
+        #     print("   '{}', Confidence {:.4f}".format(result.caption.content, result.caption.confidence))
+
+        # if result.dense_captions is not None:
+        #     print(" Dense Captions:")
+        #     for caption in result.dense_captions:
+        #         print("   '{}', {}, Confidence: {:.4f}".format(caption.content, caption.bounding_box, caption.confidence))
+
+        # if result.tags is not None:
+        #     print(" Tags:")
+        #     for tag in result.tags:
+        #         print("   '{}', Confidence {:.4f}".format(tag.name, tag.confidence))
+
+        return result
+
     else:
-        image = req.path_to_base64(image_path)
-    
-    astica_params = {
-        'tkn':  ASTICA_KEY,
-        'modelVersion': '1.0_full', # '1.0_full', '2.0_full', or '2.1_full'
-        'visionParams': 'description', # defines the parameters to be detected, some can cost a lot, so be careful
-        'input': image,
-    }
 
-    response = req.make_post_request(ASTICA_URL, astica_params)
+        error_details = sdk.ImageAnalysisErrorDetails.from_result(result)
+        print(" Analysis failed.")
+        print("   Error reason: {}".format(error_details.reason))
+        print("   Error code: {}".format(error_details.error_code))
+        print("   Error message: {}".format(error_details.message))
 
-    if response == None:
         return None
-
-    # prints whole response
-    print(json.dumps(response, indent=4))
-
-    # Handle asticaAPI response
-    if 'status' in response:
-        # Output Error if exists
-        if response['status'] == 'error':
-            print('Output:\n', response['error'])
-            return (None, None)
-        # Output Success if exists
-        if response['status'] == 'success':
-            '''if 'caption_GPTS' in response and response['caption_GPTS'] != '':
-                print('GPT Caption:', response['caption_GPTS'])
-            if 'caption' in response and response['caption']['text'] != '':
-                print('Caption:', response['caption']['text'])
-            if 'caption_tags' in response and response['caption']['text'] != '':
-                print('Tags:', response['caption_tags'])
-            if 'CaptionDetailed' in response and response['CaptionDetailed']['text'] != '':
-                print('CaptionDetailed:', response['CaptionDetailed']['text'])
-            if 'objects' in response:
-                print('Objects:', response['objects'])'''
-            
-            return (response['caption']['text'], response['caption_tags'])
-    else:
-        print('Invalid response')
-        return (None, None)
