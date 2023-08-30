@@ -9,16 +9,16 @@ def search_track_literal(url=None, base64=None, pool=5):
     tags = ['sky', 'outdoor', 'city', 'background', 'harbor', 'skyscraper']
 
     # ===========================================================================
-    # SÓ DESCOMENTE SE REALMENTE PRECISAR PRA NAO GASTAR OS CREDITOS DA API
+    # SÓ DESCOMENTE SE REALMENTE PRECISAR PRA NAO GASTAR OS CREDITOS DA API 
     # ===========================================================================
     result = get_image_description(url, base64)
 
     caption = result.caption.content
     tags= [tag.name for tag in result.tags]
 
-    query =f"{caption} {' '.join(tags)})"
+    query =' '.join(tags)
     print(query)
-    matched_track = search_track_by_lyrics(caption, pool, False)
+    matched_track = search_track_by_lyrics(query, pool, False)
 
     return matched_track
 

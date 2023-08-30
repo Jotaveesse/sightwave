@@ -160,7 +160,7 @@ function searchLiteral() {
             url: currUrl
         }
 
-        getRequest(apiUrl + 'both', queryParams).then(data => {
+        getRequest(apiUrl + 'literal', queryParams).then(data => {
             displayTracks([data]);
             
         }).catch(error => {
@@ -220,7 +220,7 @@ function searchEmotional() {
             image : currImage
         }
 
-        postRequest(apiUrl + 'both', bodyParams).then(data => {
+        postRequest(apiUrl + 'emotional', bodyParams).then(data => {
             displayTracks([data]);
             
         }).catch(error => {
@@ -311,6 +311,7 @@ function getRequest(url, queryParams = {}) {
             if (!response.ok) {
                 throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
             }
+            console.log(response)
             return response.json();
         })
         .catch(error => {

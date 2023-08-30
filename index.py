@@ -6,6 +6,7 @@ from backend.features_search import search_track_by_features
 from backend.image_search import *
 from typing import List, Optional
 from pydantic import BaseModel
+from test import test
 
 app = fastapi.FastAPI()
 
@@ -18,9 +19,9 @@ class ImageRequest(BaseModel):
 def index():
     return FileResponse("frontend/index.html")
 
-
 @app.get('/api/search/literal')
 def getLiteral(url: str):
+    #return test()
     return search_track_literal(url = url)
 
 @app.get('/api/search/emotional')

@@ -5,11 +5,12 @@ import base64
 
 load_dotenv()
 
-AZURE_URL = os.environ["AZURE_URL"]
+AZURE_URL = os.getenv("AZURE_URL")
 AZURE_KEY = os.getenv("AZURE_KEY")
 
 def get_image_description(image_url= None, image_base64=None):
     service_options = sdk.VisionServiceOptions(AZURE_URL, AZURE_KEY)
+    print(image_url, image_base64)
     if image_url:
         vision_source = sdk.VisionSource(url=image_url)
 
@@ -29,7 +30,7 @@ def get_image_description(image_url= None, image_base64=None):
     )
 
     image_analyzer = sdk.ImageAnalyzer(service_options, vision_source, analysis_options)
-
+    print('sending')
     result = image_analyzer.analyze() 
 
     if result.reason == sdk.ImageAnalysisResultReason.ANALYZED:
@@ -58,6 +59,7 @@ def get_image_description(image_url= None, image_base64=None):
         print("   Error code: {}".format(error_details.error_code))
         print("   Error message: {}".format(error_details.message))
 
+        raise Exception("Erroooo: {} {}".format(error_details.reason, error_details.message)) 
         return None
 
 def store_base64_image(base64_string, file_name, directory):
