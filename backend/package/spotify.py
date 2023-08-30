@@ -1,22 +1,19 @@
 from . import requester as req
-from dotenv import load_dotenv
 import os
 import spotipy
 
-load_dotenv()
-
-CACHE_LOCATION =  os.getenv("CACHE_LOCATION")
+CACHE_LOCATION =  os.environ["CACHE_LOCATION"]
 
 auth_manager = spotipy.oauth2.SpotifyClientCredentials(
     cache_handler=spotipy.CacheFileHandler(cache_path=CACHE_LOCATION)
 )
 spotify = spotipy.Spotify(auth_manager=auth_manager)
 
-def get_recommendations(features):
+def get_recommendations(features, limit=3):
     
     results = spotify.recommendations(
         seed_genres=features['genres'],
-        limit=3,
+        limit=limit,
         target_acousticness=features['acousticness'],
         target_danceability=features['danceability'],
         target_energy=features['energy'],

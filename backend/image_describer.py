@@ -1,60 +1,36 @@
-from .package import requester as req
-from dotenv import load_dotenv
-import json
-import re
 import os
+import requests
+import json
+import base64
 
-load_dotenv()
+AZURE_URL = os.environ["AZURE_URL"]
+AZURE_KEY = os.environ["AZURE_KEY"]
 
-ASTICA_KEY = os.getenv("ASTICA_KEY")
-ASTICA_URL = os.getenv("ASTICA_URL")
-    
-def is_url(input_string):
-    url_pattern = r"^(http|https|ftp)://.*"  # matches http, https, and ftp protocols
-    return bool(re.match(url_pattern, input_string))
-
-def get_image_description(image_path):
-    # accepts url or file path (JPG AND PNG ONLY) (USING FILE PATH COSTS MORE)
-    if is_url(image_path):
-        image = image_path
-    else:
-        image = req.path_to_base64(image_path)
-    
-    astica_params = {
-        'tkn':  ASTICA_KEY,
-        'modelVersion': '1.0_full', # '1.0_full', '2.0_full', or '2.1_full'
-        'visionParams': 'description', # defines the parameters to be detected, some can cost a lot, so be careful
-        'input': image,
+def get_image_description(image_url=None, image_base64=None):
+    api_url = AZURE_URL + "computervision/imageanalysis:analyze"
+    params = {
+        'api-version':'2023-04-01-preview',
+        'features': 'caption,tags,denseCaptions'
     }
+    
+    if image_url:
+        data = json.dumps({'url': image_url})
+        headers = {
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key': AZURE_KEY
+        }
 
-    response = req.make_post_request(ASTICA_URL, astica_params)
-
-    if response == None:
+    elif image_base64:
+        data = base64.b64decode(image_base64.split(',')[1])
+        headers = {
+            'Content-Type': 'application/octet-stream',
+            'Ocp-Apim-Subscription-Key': AZURE_KEY
+        }
+    else:
         return None
 
-    # prints whole response
-    print(json.dumps(response, indent=4))
+    response = requests.post(api_url, headers=headers, params=params, data=data)
+    response.raise_for_status()
+    analysis = response.json()
 
-    # Handle asticaAPI response
-    if 'status' in response:
-        # Output Error if exists
-        if response['status'] == 'error':
-            print('Output:\n', response['error'])
-            return (None, None)
-        # Output Success if exists
-        if response['status'] == 'success':
-            '''if 'caption_GPTS' in response and response['caption_GPTS'] != '':
-                print('GPT Caption:', response['caption_GPTS'])
-            if 'caption' in response and response['caption']['text'] != '':
-                print('Caption:', response['caption']['text'])
-            if 'caption_tags' in response and response['caption']['text'] != '':
-                print('Tags:', response['caption_tags'])
-            if 'CaptionDetailed' in response and response['CaptionDetailed']['text'] != '':
-                print('CaptionDetailed:', response['CaptionDetailed']['text'])
-            if 'objects' in response:
-                print('Objects:', response['objects'])'''
-            
-            return (response['caption']['text'], response['caption_tags'])
-    else:
-        print('Invalid response')
-        return (None, None)
+    return analysis
