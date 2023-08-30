@@ -3,7 +3,6 @@ from  .image_describer import get_image_description
 from .features_search import search_track_by_features
 from .package import spotify, track
 
-
 def search_track_literal(url=None, base64=None, pool=5):
     caption = "a big building in a city"
     tags = ['sky', 'outdoor', 'city', 'background', 'harbor', 'skyscraper']
@@ -13,8 +12,8 @@ def search_track_literal(url=None, base64=None, pool=5):
     # ===========================================================================
     result = get_image_description(url, base64)
 
-    caption = result.caption.content
-    tags= [tag.name for tag in result.tags]
+    caption = result['captionResult']['text']
+    tags= [tag['name'] for tag in result['tagsResult']['values']]
 
     query =' '.join(tags)
     print(query)
@@ -58,8 +57,8 @@ def search_track_both(url=None, base64=None):
 
     result = get_image_description(url, base64)
 
-    caption = result.caption.content
-    tags= [tag.name for tag in result.tags]
+    caption = result['captionResult']['text']
+    tags= [tag['name'] for tag in result['tagsResult']['values']]
     
     #tags = ['clothing', 'person', 'rain', 'umbrella', 'standing', 'accessory', 'holding', 'ground', 'outdoor', 'street']
     #caption='a man standing in the rain holding an umbrella'

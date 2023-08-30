@@ -1,11 +1,8 @@
 from . import requester as req
-from dotenv import load_dotenv
 import os
 import spotipy
 
-load_dotenv()
-
-CACHE_LOCATION =  os.getenv("CACHE_LOCATION")
+CACHE_LOCATION =  os.environ["CACHE_LOCATION"]
 
 auth_manager = spotipy.oauth2.SpotifyClientCredentials(
     cache_handler=spotipy.CacheFileHandler(cache_path=CACHE_LOCATION)

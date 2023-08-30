@@ -1,76 +1,36 @@
-import azure.ai.vision as sdk
 import os
-from dotenv import load_dotenv
+import requests
+import json
 import base64
 
-load_dotenv()
+AZURE_URL = os.environ["AZURE_URL"]
+AZURE_KEY = os.environ["AZURE_KEY"]
 
-AZURE_URL = os.getenv("AZURE_URL")
-AZURE_KEY = os.getenv("AZURE_KEY")
-
-def get_image_description(image_url= None, image_base64=None):
-    service_options = sdk.VisionServiceOptions(AZURE_URL, AZURE_KEY)
-    print(image_url, image_base64)
+def get_image_description(image_url=None, image_base64=None):
+    api_url = AZURE_URL + "computervision/imageanalysis:analyze"
+    params = {
+        'api-version':'2023-04-01-preview',
+        'features': 'caption,tags,denseCaptions'
+    }
+    
     if image_url:
-        vision_source = sdk.VisionSource(url=image_url)
+        data = json.dumps({'url': image_url})
+        headers = {
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key': AZURE_KEY
+        }
 
     elif image_base64:
-        file_path = store_base64_image(image_base64.split(',')[1], "img", "tmp")
-        vision_source = sdk.VisionSource(filename=file_path)
-
+        data = base64.b64decode(image_base64.split(',')[1])
+        headers = {
+            'Content-Type': 'application/octet-stream',
+            'Ocp-Apim-Subscription-Key': AZURE_KEY
+        }
     else:
         return None
 
-    analysis_options = sdk.ImageAnalysisOptions()
+    response = requests.post(api_url, headers=headers, params=params, data=data)
+    response.raise_for_status()
+    analysis = response.json()
 
-    analysis_options.features = (
-        sdk.ImageAnalysisFeature.CAPTION |
-        sdk.ImageAnalysisFeature.DENSE_CAPTIONS |
-        sdk.ImageAnalysisFeature.TAGS
-    )
-
-    image_analyzer = sdk.ImageAnalyzer(service_options, vision_source, analysis_options)
-    print('sending')
-    result = image_analyzer.analyze() 
-
-    if result.reason == sdk.ImageAnalysisResultReason.ANALYZED:
-        
-        # if result.caption is not None:
-        #     print(" Caption:")
-        #     print("   '{}', Confidence {:.4f}".format(result.caption.content, result.caption.confidence))
-
-        # if result.dense_captions is not None:
-        #     print(" Dense Captions:")
-        #     for caption in result.dense_captions:
-        #         print("   '{}', {}, Confidence: {:.4f}".format(caption.content, caption.bounding_box, caption.confidence))
-
-        # if result.tags is not None:
-        #     print(" Tags:")
-        #     for tag in result.tags:
-        #         print("   '{}', Confidence {:.4f}".format(tag.name, tag.confidence))
-
-        return result
-
-    else:
-
-        error_details = sdk.ImageAnalysisErrorDetails.from_result(result)
-        print(" Analysis failed.")
-        print("   Error reason: {}".format(error_details.reason))
-        print("   Error code: {}".format(error_details.error_code))
-        print("   Error message: {}".format(error_details.message))
-
-        raise Exception("Erroooo: {} {}".format(error_details.reason, error_details.message)) 
-        return None
-
-def store_base64_image(base64_string, file_name, directory):
-    # Decode the base64 string
-    image_data = base64.b64decode(base64_string)
-    
-    # Create the file path
-    file_path = os.path.join(directory, file_name)
-    
-    # Write the image data to the file
-    with open(file_path, 'wb') as f:
-        f.write(image_data)
-    
-    return file_path
+    return analysis

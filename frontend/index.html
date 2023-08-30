@@ -8,7 +8,8 @@
     <link rel="icon" type="image/png" href="images/sightwave-logo2.png">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/loading.css">
-    <script src="image_to_lyrics.js"></script>
+    <script src="main.js"></script>
+    <script src="requester.js"></script>
 </head>
 
 <body>
@@ -47,11 +48,11 @@
             </div>
             <div id="button-section">
                 <div id="button-area">
-                        <button class="middle-button" id="submit-lyrics-button" onclick="searchLiteral()">Pesquisa Literal</button>
+                        <button class="middle-button" id="submit-lyrics-button" onclick="searchTrack('literal')">Pesquisa Literal</button>
 
-                        <button class="middle-button" id="submit-image-button" onclick="searchEmotional()">Pesquisa Emocional</button>
+                        <button class="middle-button" id="submit-image-button" onclick="searchTrack('emotional')">Pesquisa Emocional</button>
 
-                        <button class="middle-button" id="submit-feats-button" onclick="searchBoth()">Pesquisa Dupla</button>
+                        <button class="middle-button" id="submit-feats-button" onclick="searchTrack('both')">Pesquisa Dupla</button>
                 </div>
 
                 <div id="loading-area" class="hidden">
@@ -92,11 +93,6 @@
             </div>
         </div>
     </div>
-
-    <!--
-    <input type="text" id="input-field" placeholder="Texto">
-    <textarea id="text-area"></textarea>
-    -->
 
     <template id="embed-iframe-template">
         <iframe class="embed-iframe" style="border-radius:12px"

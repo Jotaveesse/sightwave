@@ -4,12 +4,9 @@ import json
 import re
 import os
 
-load_dotenv()
-
-MUSIX_API_KEY = os.getenv("MUSIX_API_KEY")
-TRACK_SEARCH_URL = os.getenv("TRACK_SEARCH_URL")
-LYRICS_FETCH_URL = os.getenv("LYRICS_FETCH_URL")
-
+MUSIX_API_KEY = os.environ["MUSIX_API_KEY"]
+TRACK_SEARCH_URL = os.environ["TRACK_SEARCH_URL"]
+LYRICS_FETCH_URL = os.environ["LYRICS_FETCH_URL"]
 
 def get_tracks_from_lyrics(query, track_amount=5, with_timestamp=True):
     search_params = {
