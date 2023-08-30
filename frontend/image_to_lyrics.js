@@ -19,10 +19,10 @@ var openFileButton;
 var fileInput;
 
 var currUrl = null;
-var currFile = null;
+var currImage = null;
 
-//const apiUrl = window.location.href + 'api/search/';
-const apiUrl = 'https://image-to-lyrics.vercel.app/api/search/'
+const apiUrl = window.location.href + 'api/search/';
+//const apiUrl = 'https://image-to-lyrics.vercel.app/api/search/'
 
 window.onload = function () {
     inputField = document.getElementById('input-field');
@@ -75,6 +75,7 @@ window.onload = function () {
 
     sendAnotherButton.addEventListener('click', function (e) {
         currUrl = null;
+        currImage = null;
         toggleVisibility(imageDisplay);
         toggleVisibility(imageUpload);
     });
@@ -112,13 +113,18 @@ function handleFiles(files) {
         const reader = new FileReader();
 
         reader.onload = function (event) {
-            imageDisplayArea.src = event.target.result;
+            imageDisplayArea.src = reader.result;
             toggleVisibility(imageDisplay);
             toggleVisibility(imageUpload);
         }
 
+        reader.onloadend = function () {
+            currImage = reader.result;
+        }
+
         // Read the selected file as a data URL
-        reader.readAsDataURL(selectedFile);
+        imgBase64 = reader.readAsDataURL(selectedFile);
+        console.log(imgBase64);
     }
 }
 
@@ -145,73 +151,127 @@ function createEmbed(trackId) {
     embedSection.appendChild(clonedIframe);
 }
 
-function requestLyricsFromImage() {
-    if (currUrl == null)
-        return;
-
-    queryParams = {
-        url: currUrl
-    }
-
-    toggleVisibility(loadingArea)
-    toggleVisibility(buttonArea)
-
-    getRequest(apiUrl + 'image', queryParams).then(data => {
-        displayTracks([data]);
-
-    }).catch(error => {
-        textArea.value = 'An error occurred while fetching lyrics: ' + error;
-    }).finally(() => {
+function searchLiteral() {
+    if (currUrl != null) {
         toggleVisibility(loadingArea)
         toggleVisibility(buttonArea)
+        
+        queryParams = {
+            url: currUrl
+        }
 
-    });
+        getRequest(apiUrl + 'both', queryParams).then(data => {
+            displayTracks([data]);
+            
+        }).catch(error => {
+            lyricsText.innerHTML = 'Erro: ' + error;
+            
+        }).finally(() => {
+            toggleVisibility(loadingArea)
+            toggleVisibility(buttonArea)
+        });
+    }
+    else if (currImage != null) {
+        toggleVisibility(loadingArea)
+        toggleVisibility(buttonArea)
+        
+        bodyParams={
+            image : currImage
+        }
+
+        postRequest(apiUrl + 'literal', bodyParams).then(data => {
+            displayTracks([data]);
+            
+        }).catch(error => {
+            lyricsText.innerHTML = 'Erro: ' + error;
+
+        }).finally(() => {
+            toggleVisibility(loadingArea)
+            toggleVisibility(buttonArea)
+        });
+    }
 }
 
-function requestLyricsFromLyrics() {
-    //if (currUrl == null)
-    //    return;
-
-    queryParams = {
-        query: urlInput.value
-    }
-
-    toggleVisibility(loadingArea)
-    toggleVisibility(buttonArea)
-
-    getRequest(apiUrl + 'lyrics', queryParams).then(data => {
-        displayTracks([data]);
-
-    }).catch(error => {
-        lyricsText.innerHTML = 'An error occurred while fetching lyrics: ' + error;
-
-    }).finally(() => {
+function searchEmotional() {
+    if (currUrl != null) {
         toggleVisibility(loadingArea)
         toggleVisibility(buttonArea)
+        
+        queryParams = {
+            url: currUrl
+        }
 
-    });
+        getRequest(apiUrl + 'emotional', queryParams).then(data => {
+            displayTracks([data]);
+            
+        }).catch(error => {
+            lyricsText.innerHTML = 'Erro: ' + error;
+            
+        }).finally(() => {
+            toggleVisibility(loadingArea)
+            toggleVisibility(buttonArea)
+        });
+    }
+    else if (currImage != null) {
+        toggleVisibility(loadingArea)
+        toggleVisibility(buttonArea)
+        
+        bodyParams={
+            image : currImage
+        }
+
+        postRequest(apiUrl + 'both', bodyParams).then(data => {
+            displayTracks([data]);
+            
+        }).catch(error => {
+            lyricsText.innerHTML = 'Erro: ' + error;
+
+        }).finally(() => {
+            toggleVisibility(loadingArea)
+            toggleVisibility(buttonArea)
+        });
+    }
 }
 
-function requestLyricsFromFeats() {
-    //if (currUrl == null)
-    //    return;
-
-    queryParams = {
-        query: inputField.value
-    }
-
-    toggleVisibility(loadingArea)
-    toggleVisibility(buttonArea)
-
-    getRequest(apiUrl + 'features', queryParams).then(data => {
-        displayTracks([data]);
-
-    }).catch(error => {
-        lyricsText.innerHTML = 'An error occurred while fetching lyrics: ' + error;
-    }).finally(() => {
+function searchBoth() {
+    if (currUrl != null) {
         toggleVisibility(loadingArea)
         toggleVisibility(buttonArea)
-    });
+        
+        queryParams = {
+            url: currUrl
+        }
+
+        getRequest(apiUrl + 'both', queryParams).then(data => {
+            displayTracks([data]);
+            
+        }).catch(error => {
+            lyricsText.innerHTML = 'Erro: ' + error;
+            
+        }).finally(() => {
+            toggleVisibility(loadingArea)
+            toggleVisibility(buttonArea)
+        });
+    }
+    else if (currImage != null) {
+        toggleVisibility(loadingArea)
+        toggleVisibility(buttonArea)
+        
+        bodyParams={
+            image : currImage
+        }
+
+        postRequest(apiUrl + 'both', bodyParams).then(data => {
+            displayTracks([data]);
+            
+        }).catch(error => {
+            lyricsText.innerHTML = 'Erro: ' + error;
+
+        }).finally(() => {
+            toggleVisibility(loadingArea)
+            toggleVisibility(buttonArea)
+        });
+    }
 }
 
 function displayTracks(tracks) {
@@ -230,7 +290,7 @@ function displayTracks(tracks) {
 
             for (var i = 0; i < track.lyrics.length; i++) {
                 if (i >= track.matched_section_id && i <= track.matched_section_id + 2) {
-                    lyricsText.innerHTML += `<div style="background-color:#888833">${track.lyrics[i]}</div>`;
+                    lyricsText.innerHTML += `<div style="background-color:#661144">${track.lyrics[i]}</div>`;
                 }
                 else
                     lyricsText.innerHTML += `<div>${track.lyrics[i]}</div>`;
@@ -255,6 +315,32 @@ function getRequest(url, queryParams = {}) {
         })
         .catch(error => {
             console.error('Error making GET request:', error);
+            throw error;
+        });
+}
+
+function postRequest(url, body = {}, queryParams = {}) {
+    const queryString = Object.keys(queryParams)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
+        .join('&');
+
+    const fullUrl = queryString ? `${url}?${queryString}` : url;
+
+    return fetch(fullUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Error making POST request:', error);
             throw error;
         });
 }

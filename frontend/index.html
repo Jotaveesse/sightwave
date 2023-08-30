@@ -24,7 +24,7 @@
                             <span>Arraste e solte ou selecione um arquivo</span>
                             <img src="images/upload.png">
                             <button id="select_file_button">Select</button>
-                            <input type="file" id="file-input" style="display: none;">
+                            <input type="file" id="file-input" style="display: none;" placeholder="Insira a URL de uma imagem">
                         </div>
 
                     </div>
@@ -47,14 +47,11 @@
             </div>
             <div id="button-section">
                 <div id="button-area">
-                        <button class="middle-button" id="submit-lyrics-button" onclick="requestLyricsFromLyrics()">Pesquisar por
-                            letras</button>
+                        <button class="middle-button" id="submit-lyrics-button" onclick="searchLiteral()">Pesquisa Literal</button>
 
-                        <button class="middle-button" id="submit-image-button" onclick="requestLyricsFromImage()">Pesquisar por
-                            imagem</button>
+                        <button class="middle-button" id="submit-image-button" onclick="searchEmotional()">Pesquisa Emocional</button>
 
-                        <button class="middle-button" id="submit-feats-button" onclick="requestLyricsFromFeats()">Pesquisar por
-                            features</button>
+                        <button class="middle-button" id="submit-feats-button" onclick="searchBoth()">Pesquisa Dupla</button>
                 </div>
 
                 <div id="loading-area" class="hidden">

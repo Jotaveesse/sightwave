@@ -12,11 +12,11 @@ auth_manager = spotipy.oauth2.SpotifyClientCredentials(
 )
 spotify = spotipy.Spotify(auth_manager=auth_manager)
 
-def get_recommendations(features):
+def get_recommendations(features, limit=3):
     
     results = spotify.recommendations(
         seed_genres=features['genres'],
-        limit=3,
+        limit=limit,
         target_acousticness=features['acousticness'],
         target_danceability=features['danceability'],
         target_energy=features['energy'],

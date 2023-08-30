@@ -47,25 +47,13 @@ def most_similar_track(main_features, tracks):
         if diff < lowest_diff:
             lowest_diff = diff
             most_similar = tracks[i]
+            print(tracks[i]['id'])
         
     print(lowest_diff)
     return most_similar
 
-def search_track_by_features(query, features=[]):
-    features = {
-        'genres':["acoustic", "chill", "indie", "pop", "folk"],
-        'acousticness':0.15,
-        'danceability':0.25,
-        'energy':0.6,
-        'instrumentalness':0.5,
-        'liveness':0.2,
-        'loudness':-25,
-        'speechiness':0.1,
-        'tempo':100,
-        'valence':0.8,
-    }
-
-    track_list = spotify.get_tracks(f'{query} {" ".join(features["genres"])}', amount=200)
+def search_track_by_features(query, features=[], pool=100):
+    track_list = spotify.get_tracks(query, amount=pool)
     
     if len(track_list) == 0:
         return(None)
