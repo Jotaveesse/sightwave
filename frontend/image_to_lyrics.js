@@ -15,6 +15,8 @@ var lyricsText;
 var embedSection;
 var buttonArea;
 var loadingArea;
+var openFileButton;
+var fileInput;
 
 var currUrl = null;
 var currFile = null;
@@ -40,6 +42,8 @@ window.onload = function () {
     embedSection = document.getElementById('embed-section');
     buttonArea = document.getElementById('button-area');
     loadingArea = document.getElementById('loading-area');
+    openFileButton = document.getElementById('select_file_button');
+    fileInput = document.getElementById('file-input');
 
     imageUpload.addEventListener('dragover', function (e) {
         e.preventDefault();
@@ -80,33 +84,43 @@ window.onload = function () {
             if (isValid) {
                 currUrl = urlInput.value;
                 imageDisplayArea.src = currUrl;
+
                 toggleVisibility(imageDisplay);
                 toggleVisibility(imageUpload);
-            } else {
+            }
+            else {
                 alert('URL inválida');
             }
         });
     });
 
+    openFileButton.addEventListener('click', () => {
+        fileInput.click();
+    });
 
-    // Function to handle dropped files
-    function handleFiles(files) {
-        if (files && files[0]) {
-            const selectedFile = files[0];
+    fileInput.addEventListener('change', () => {
+        handleFiles(fileInput.files);
+    });
 
-            const reader = new FileReader();
 
-            reader.onload = function (event) {
-                imageDisplayArea.src = event.target.result;
-                toggleVisibility(imageDisplay);
-                toggleVisibility(imageUpload);
-            }
-
-            // Read the selected file as a data URL
-            reader.readAsDataURL(selectedFile);
-        }
-    }
 };
+// Function to handle dropped files
+function handleFiles(files) {
+    if (files && files[0]) {
+        const selectedFile = files[0];
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            imageDisplayArea.src = event.target.result;
+            toggleVisibility(imageDisplay);
+            toggleVisibility(imageUpload);
+        }
+
+        // Read the selected file as a data URL
+        reader.readAsDataURL(selectedFile);
+    }
+}
 
 function isImageURLValid(url, callback) {
     var img = new Image();
@@ -136,14 +150,22 @@ function requestLyricsFromImage() {
         return;
 
     queryParams = {
-        url: inputField.value
+        url: currUrl
     }
-    /*getRequest(apiUrl+'image', queryParams).then(data => {
+
+    toggleVisibility(loadingArea)
+    toggleVisibility(buttonArea)
+
+    getRequest(apiUrl + 'image', queryParams).then(data => {
         displayTracks([data]);
 
     }).catch(error => {
         textArea.value = 'An error occurred while fetching lyrics: ' + error;
-    });*/
+    }).finally(() => {
+        toggleVisibility(loadingArea)
+        toggleVisibility(buttonArea)
+
+    });
 }
 
 function requestLyricsFromLyrics() {
@@ -156,28 +178,39 @@ function requestLyricsFromLyrics() {
 
     toggleVisibility(loadingArea)
     toggleVisibility(buttonArea)
+
     getRequest(apiUrl + 'lyrics', queryParams).then(data => {
-        toggleVisibility(loadingArea)
-        toggleVisibility(buttonArea)
         displayTracks([data]);
 
     }).catch(error => {
         lyricsText.innerHTML = 'An error occurred while fetching lyrics: ' + error;
+
+    }).finally(() => {
+        toggleVisibility(loadingArea)
+        toggleVisibility(buttonArea)
+
     });
 }
 
 function requestLyricsFromFeats() {
-    if (currUrl == null)
-        return;
+    //if (currUrl == null)
+    //    return;
 
     queryParams = {
         query: inputField.value
     }
+
+    toggleVisibility(loadingArea)
+    toggleVisibility(buttonArea)
+
     getRequest(apiUrl + 'features', queryParams).then(data => {
         displayTracks([data]);
 
     }).catch(error => {
         lyricsText.innerHTML = 'An error occurred while fetching lyrics: ' + error;
+    }).finally(() => {
+        toggleVisibility(loadingArea)
+        toggleVisibility(buttonArea)
     });
 }
 
@@ -187,16 +220,21 @@ function displayTracks(tracks) {
         element.remove();
     });
 
-    lyricsText.value = '';
+    lyricsText.innerHTML = '';
 
-    console.log(tracks);
+    tracks.forEach(track => {
 
-    tracks.forEach(element => {
+        if (track != null) {
+            createEmbed(track.id);
+            console.log(track);
 
-        if (element != null) {
-            createEmbed(element.id);
-            console.log(element);
-            lyricsText.innerHTML += element.lyrics.join("<br>");
+            for (var i = 0; i < track.lyrics.length; i++) {
+                if (i >= track.matched_section_id && i <= track.matched_section_id + 2) {
+                    lyricsText.innerHTML += `<div style="background-color:#888833">${track.lyrics[i]}</div>`;
+                }
+                else
+                    lyricsText.innerHTML += `<div>${track.lyrics[i]}</div>`;
+            }
         }
     });
 }

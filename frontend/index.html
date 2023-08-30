@@ -21,9 +21,10 @@
                 <div id="image-upload">
                     <div id="image-upload-top">
                         <div class="drop_area" id="file_drop_area">
-                            <span>Drag and drop or select your file</span>
+                            <span>Arraste e solte ou selecione um arquivo</span>
                             <img src="images/upload.png">
-                            <button id="select_file_button" class="execute_button">Select</button>
+                            <button id="select_file_button">Select</button>
+                            <input type="file" id="file-input" style="display: none;">
                         </div>
 
                     </div>
@@ -102,7 +103,7 @@
 
     <template id="embed-iframe-template">
         <iframe class="embed-iframe" style="border-radius:12px"
-            src="https://open.spotify.com/embed/track/TRACKID?utm_source=generator&theme=0" width="100%" height="100%"
+            src="https://open.spotify.com/embed/track/TRACKID?utm_source=generator&theme=0" width="100%" height="154px"
             frameBorder="0" allowfullscreen=""
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
         </iframe>

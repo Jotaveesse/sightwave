@@ -135,7 +135,6 @@ button:hover{
 	padding:16px;
 	margin:auto;
 	box-sizing: border-box;
-	background-color:#222;
 	border-radius:16px;
 	display:flex;
 	flex-direction:column;
@@ -148,6 +147,7 @@ button:hover{
 	height:auto;
 	width:100%;
 	text-align: center;
+	font-size: 1.2em;
 }
 .drop_area button{
 	height: 48px;
@@ -170,7 +170,7 @@ button:hover{
 }
 
 #image-display-area{
-	max-height: 800px;
+	max-height: 70vh;
 	max-width: 100%;
 	margin: auto;
 	border-radius: 16px 16px 0px 0px;
@@ -178,7 +178,7 @@ button:hover{
 
 #button-section {
     background-color: #121212;
-    height: 80%;
+    height:  calc(70vh + 48px);
 }
 
 #button-area {
@@ -233,13 +233,13 @@ button:hover{
 
 #track-section {
     background-color: #242424;
-    max-height: 800px;
+    max-height: calc(70vh + 48px);
 	border-radius: 16px
 }
 
 #embed-section {
     width: 100%;
-    height: 20%;
+    height: fit-content;
 }
 
 #lyrics-section::-webkit-scrollbar {
@@ -251,7 +251,7 @@ button:hover{
 }
 
 #lyrics-section {
-    height: 80%;
+    height: calc(100% - 158px);
     font-size: 1.1em;
     font-weight: 600;
     overflow-y: auto;
