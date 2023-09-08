@@ -144,7 +144,7 @@ function displayTracks(tracks) {
 
     tracks.forEach(track => {
 
-        if (track != null) {
+        if (track != null&&track.matched_section_id!=-1) {
             createEmbed(track.id);
             console.log(track);
 

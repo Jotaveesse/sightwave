@@ -26,6 +26,9 @@ class Track:
     def calculate_similarity(self):
         query_tokens = set(filter(lambda token: len(token)>2, self.query.split()))
 
+        if(len(query_tokens)==0):
+            return
+        
         max_similarity = -1
         most_similar_index = -1
 

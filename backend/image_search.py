@@ -1,5 +1,5 @@
 import json
-from  .lyrics_search import search_track_by_lyrics
+from  .lyrics_search import get_lyrics_from_id, search_track_by_lyrics
 from  .image_describer import get_image_description
 from .features_search import search_track_by_features
 from .gpt import get_image_feats
@@ -22,13 +22,18 @@ def search_track_literal(url=None, base64=None, pool=5):
     return matched_track
 
 def search_track_emotional(url=None, base64=None):
-    feats = {'genres': ['afrobeat'], 'acousticness': 0.2, 'danceability': 0.5, 'energy': 0.7, 'instrumentalness': 0.1, 'liveness': 0.3, 'loudness': -10, 'speechiness': 0.2, 'tempo': 120, 'valence': 0.6}
+    feats = {'genres': ['hip-hop'], 'acousticness': 0.2, 'danceability': 0.5, 'energy': 0.7, 'instrumentalness': 0.1, 'liveness': 0.3, 'loudness': -10, 'speechiness': 0.2, 'tempo': 120, 'valence': 0.6}
     result = get_image_description(url, base64)
     print(result)
-    feats = get_image_feats(json.dumps(result))
+    #feats = get_image_feats(json.dumps(result))
     print(feats)
     track_id = spotify.get_recommendations(feats, 1)[0]['id']
     found_track = track.Track(id=track_id)
+
+    lyrics= get_lyrics_from_id(found_track.id)
+    if lyrics is not None:
+        print(lyrics)
+        found_track.set_timestamp(lyrics)
 
     return found_track
 
@@ -57,5 +62,11 @@ def search_track_both(url=None, base64=None):
     print(feats)
 
     found_track = search_track_by_features(query ,feats, 150)
+
+    lyrics= get_lyrics_from_id(found_track.id)
+    if lyrics is not None:
+        print(lyrics)
+        found_track.set_timestamp(lyrics)
+
 
     return found_track
