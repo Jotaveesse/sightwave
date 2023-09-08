@@ -121,7 +121,8 @@ function searchTrack(searchOption) {
     
         requestPromise
             .then(data => {
-                displayTracks([data]);
+                console.log(data)
+                displayTracks(data);
             })
             .catch(error => {
                 lyricsText.innerHTML = 'Error: ' + error;
@@ -144,14 +145,17 @@ function displayTracks(tracks) {
 
     tracks.forEach(track => {
 
-        if (track != null&&track.matched_section_id!=-1) {
+        if (track != null) {
             createEmbed(track.id);
             console.log(track);
 
             //para cada pedaço da letra
             for (var i = 0; i < track.lyrics.length; i++) {
+                var hasMatchedSection = (track.matched_section_id!=-1)
+                var isMatchedSection = (i >= track.matched_section_id && i <= track.matched_section_id + 2)
+
                 //colocar uma cor diferente na parte da letra que deu match
-                if (i >= track.matched_section_id && i <= track.matched_section_id + 2) {
+                if (hasMatchedSection && isMatchedSection)  {
                     lyricsText.innerHTML += `<div style="background-color:#661144">${track.lyrics[i]}</div>`;
                 }
                 else

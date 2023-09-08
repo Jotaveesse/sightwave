@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+
 load_dotenv()
 
 import fastapi
@@ -11,49 +12,59 @@ from pydantic import BaseModel
 
 app = fastapi.FastAPI()
 
-#estrutura do body dos caminhos de post
+
+# estrutura do body dos caminhos de post
 class ImageRequest(BaseModel):
     image: str
 
-@app.get('/')
+
+@app.get("/")
 def index():
     return FileResponse("frontend/index.html")
 
-#caminhos para envio de url
-@app.get('/api/search/literal')
+
+# caminhos para envio de url
+@app.get("/api/search/literal")
 def getLiteral(url: str):
-    return search_track_literal(url = url)
+    return search_track_literal(url=url, amount=3)
 
-@app.get('/api/search/emotional')
+
+@app.get("/api/search/emotional")
 def getEmotional(url: str):
-    return search_track_emotional(url = url)
+    return search_track_emotional(url=url, amount=3)
 
-@app.get('/api/search/both')
+
+@app.get("/api/search/both")
 def getBoth(url: str):
-    return search_track_both(url = url)
+    return search_track_both(url=url, amount=3)
 
-#caminhos pra upload de imagem
-@app.post('/api/search/literal')
-def postLiteral(image:ImageRequest):
-    return search_track_literal(base64=image.image)
 
-@app.post('/api/search/emotional')
-def postEmotional(image:ImageRequest):
-    return search_track_emotional(base64=image.image)
+# caminhos pra upload de imagem
+@app.post("/api/search/literal")
+def postLiteral(image: ImageRequest):
+    return search_track_literal(base64=image.image, amount=3)
 
-@app.post('/api/search/both')
+
+@app.post("/api/search/emotional")
+def postEmotional(image: ImageRequest):
+    return search_track_emotional(base64=image.image, amount=3)
+
+
+@app.post("/api/search/both")
 def postBoth(image: ImageRequest):
-    return search_track_both(base64=image.image)
+    return search_track_both(base64=image.image, amount=3)
 
 
-#caminhos para teste
-@app.get('/api/search/lyrics')
+# caminhos para teste
+@app.get("/api/search/lyrics")
 def by_lyrics(query: str):
     return search_track_by_lyrics(query)
 
-@app.get('/api/search/features')
+
+@app.get("/api/search/features")
 def by_features(query: str):
     return search_track_by_features(query)
+
 
 # makes all files in the dir frontend available on root path
 app.mount("/", StaticFiles(directory="frontend"), name="static")

@@ -42,7 +42,8 @@ def path_to_base64(image_path):
     return image_base64
 
 def clean_query(query):
-    index = query.find("feat")
+    lower_query = query.lower()
+    index = lower_query.find("feat")
     if index != -1:
         query = query[:index]
     
