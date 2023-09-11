@@ -1,6 +1,8 @@
 from . import requester as req
 import os
 import spotipy
+from dotenv import load_dotenv
+load_dotenv()
 
 CACHE_LOCATION =  os.environ["CACHE_LOCATION"]
 
