@@ -93,5 +93,12 @@ def get_tracks_genres(tracks):
 
 def get_track_id(title, artist):
     query = f"track:{req.clean_query(title)} artist:{req.clean_query(artist)}"
+
     results = spotify.search(q=query, type='track', limit='1')
-    return results["tracks"]["items"][0]["id"]
+    tracks = results["tracks"]["items"]
+    
+    if len(tracks):
+        return tracks[0]["id"]
+    else:
+        print(f'Track "{title}" by "{artist}" not found using query: "{query}"')
+        return None

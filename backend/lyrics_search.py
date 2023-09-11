@@ -47,43 +47,44 @@ def get_lyrics_from_id(id):
         return None
 
 
-def search_track_by_lyrics(query, search_amount=5, with_timestamp=True):
+def search_track_by_lyrics(query, amount=1, pool_size=5, with_timestamp=False):
     # removes special characters
     cleaned_query = re.sub(r"[^\w\s]", " ", query)
 
-    tracks_found = get_tracks_from_lyrics(cleaned_query, search_amount, with_timestamp)
+    tracks_found = get_tracks_from_lyrics(cleaned_query, pool_size, with_timestamp)
 
     if len(tracks_found) == 0:
         return None
 
-    lyrics_with_ids = []
+    valid_tracks = []
     # creates a new Track object for each track found
     for tr in tracks_found:
-        lyric = track.Track(cleaned_query, title=tr[0], artist=tr[1])
+        tr = track.Track(cleaned_query, title=tr[0], artist=tr[1])
 
-        id = spotify.get_track_id(lyric.title, lyric.artist)
+        id = spotify.get_track_id(tr.title, tr.artist)
         # only saves Track if it can find its id
         if id != None:
-            lyric.id = id
-            lyrics_with_ids.append(lyric)
+            tr.id = id
+            valid_tracks.append(tr)
 
-        # print(f'Track: {track[0]}')
-
-    if len(lyrics_with_ids) == 0:
+    if len(valid_tracks) == 0:
         return None
 
-    lyrics_with_timestamps = []
-    for lyric in lyrics_with_ids:
-        timestamp = get_lyrics_from_id(lyric.id)
+    tracks_with_timestamps = []
+    for tr in valid_tracks:
+        timestamp = get_lyrics_from_id(tr.id)
 
         # only saves Track if it can find its timestamped lyrics
         if timestamp != None:
-            lyric.set_timestamp(timestamp)
-            lyrics_with_timestamps.append(lyric)
+            tr.set_timestamp(timestamp)
+            tracks_with_timestamps.append(tr)
 
-    if len(lyrics_with_timestamps) == 0:
+    if len(tracks_with_timestamps) == 0:
         return None
 
-    # returns only the track which matches the query the most
-    most_similar = max(lyrics_with_timestamps, key=lambda lyric: lyric.similarity)
+    # sorts tracks by similarity
+    sorted_tracks = sorted(tracks_with_timestamps, key=lambda lyric: lyric.similarity, reverse = True)
+    # returns only the tracsk which match the query the most
+    most_similar = sorted_tracks[:amount]
+
     return most_similar
