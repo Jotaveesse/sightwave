@@ -25,34 +25,34 @@ def index():
 
 # caminhos para envio de url
 @app.get("/api/search/literal")
-def getLiteral(url: str):
-    return search_track_literal(url=url, amount=3)
+def getLiteral(url: str, amount: int):
+    return search_track_literal(url=url, amount=amount)
 
 
 @app.get("/api/search/emotional")
-def getEmotional(url: str):
-    return search_track_emotional(url=url, amount=3)
+def getEmotional(url: str, amount: int):
+    return search_track_emotional(url=url, amount=amount)
 
 
 @app.get("/api/search/both")
-def getBoth(url: str):
-    return search_track_both(url=url, amount=3)
+def getBoth(url: str, amount: int):
+    return search_track_both(url=url, amount=amount)
 
 
 # caminhos pra upload de imagem
 @app.post("/api/search/literal")
-def postLiteral(image: ImageRequest):
-    return search_track_literal(base64=image.image, amount=3)
+def postLiteral(image: ImageRequest, amount: int):
+    return search_track_literal(base64=image.image, amount=amount)
 
 
 @app.post("/api/search/emotional")
-def postEmotional(image: ImageRequest):
-    return search_track_emotional(base64=image.image, amount=3)
+def postEmotional(image: ImageRequest, amount: int):
+    return search_track_emotional(base64=image.image, amount=amount)
 
 
 @app.post("/api/search/both")
-def postBoth(image: ImageRequest):
-    return search_track_both(base64=image.image, amount=3)
+def postBoth(image: ImageRequest, amount: int):
+    return search_track_both(base64=image.image, amount=amount)
 
 
 # caminhos para teste
