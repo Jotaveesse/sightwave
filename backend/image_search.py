@@ -24,15 +24,23 @@ TEST_TAGS = ["sky", "outdoor", "city", "background", "harbor", "skyscraper"]
 
 def search_track_literal(url=None, base64=None, amount=1, pool_size=5):
     result = get_image_description(url, base64)
+    print(result)
 
     caption = result["captionResult"]["text"]
     tags = [tag["name"] for tag in result["tagsResult"]["values"]]
 
-    query = " ".join(tags)
-    print(query)
+    query = " ".join(tags)[:64]
 
-    matched_tracks = search_track_by_lyrics(query, amount, pool_size, True)
+    track_list = spotify.get_tracks(query, amount=amount)
+    matched_tracks=[track.Track(id = tr['id']) for tr in track_list]
 
+    for tr in matched_tracks:
+        lyrics = get_lyrics_from_id(tr.id)
+
+        if lyrics is not None:
+            tr.set_timestamp(lyrics)
+
+    #matched_tracks = search_track_by_lyrics(query, amount, pool_size, True)
     return matched_tracks
 
 
@@ -63,13 +71,13 @@ def search_track_both(url=None, base64=None, amount=1):
 
     caption = result["captionResult"]["text"]
     tags = [tag["name"] for tag in result["tagsResult"]["values"]]
-    query = " ".join(tags)
+    query = " ".join(tags)[:64]
 
     print(result)
     feats = get_image_feats(json.dumps(result))
     print(feats)
 
-    found_tracks = search_track_by_features(query, feats, amount, 150)
+    found_tracks = search_track_by_features(query, feats, amount, 200)
 
     # gets the lyrics of each track
     for tr in found_tracks:

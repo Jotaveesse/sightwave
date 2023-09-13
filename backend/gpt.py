@@ -16,12 +16,12 @@ system_message=f'''I will give you some parameters and descriptions of an image 
     speechiness: 0 to 1
     tempo: 60 to 180
     valence: 0 to 1
-    genres: 5 genres from the list and only from this list, do not use other genres: 
+    genres: up to 5 genres from the list and only from this list, do not use other genres: 
     {str(genres.SIMPLE_GENRES)}
     do not put other genres in the response, only use those i specified
     respond only in this json format, no extra text, just the json:
     {{
-        "genres": ["genre1", "genre2", "genre3", "genre4", "genre5"],
+        "genres": ["musicalgenre", "musicalgenre", "musicalgenre", "musicalgenre", "musicalgenre"],
         "acousticness": value,
         "danceability": value,
         "energy": value,
@@ -44,5 +44,10 @@ def get_image_feats(description):
                 model="gpt-3.5-turbo", messages=messages)
     reply = chat.choices[0].message.content
     json_reply = json.loads(reply)
+
+    json_reply['genres']  = [genre for genre in json_reply['genres'] if genre in genres.SIMPLE_GENRES]
+
+    if len(json_reply['genres']) == 0:
+        json_reply['genres']=['soundtracks']
 
     return json_reply
