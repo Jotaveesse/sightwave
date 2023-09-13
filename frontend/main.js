@@ -18,6 +18,7 @@ var imageUpload,
 
 var currUrl = null;
 var currImage = null;
+var amount = 1;
 
 const apiUrl = window.location.origin + "/api/search/";
 //const apiUrl = 'https://image-to-lyrics.vercel.app/api/search/'
@@ -31,10 +32,13 @@ window.onload = function () {
   urlInput = document.getElementById("url-input").children[0];
   fileInput = document.getElementById("file-input");
 
+  suggestionAmount = document.getElementById("amount-of-suggestions");
+
   imageDisplayArea = document.getElementById("image-display-area");
   fileDropArea = document.getElementById("file_drop_area");
   buttonArea = document.getElementById("button-area");
   loadingArea = document.getElementById("loading-area");
+  trackSection = document.getElementById("track-section");
 
   sendButton = document.getElementById("end-button");
   sendAnotherButton = document.getElementById("send-another-button");
@@ -114,6 +118,7 @@ function searchTrack(searchOption) {
   if (currUrl !== null || currImage !== null) {
     toggleVisibility(loadingArea);
     toggleVisibility(buttonArea);
+    trackSection.classList.add("hidden2");
 
     let requestPromise;
     let params;
@@ -121,7 +126,7 @@ function searchTrack(searchOption) {
     if (currUrl !== null) {
       params = {
         url: currUrl,
-        amount: 1,
+        amount: amount,
       };
       requestPromise = getRequest(apiUrl + searchOption, params);
     } else {
@@ -129,7 +134,7 @@ function searchTrack(searchOption) {
         image: currImage,
       };
       params = {
-        amount: 1,
+        amount: amount,
       };
       requestPromise = postRequest(apiUrl + searchOption, body, params);
     }
@@ -145,6 +150,12 @@ function searchTrack(searchOption) {
       .finally(() => {
         toggleVisibility(loadingArea);
         toggleVisibility(buttonArea);
+        trackSection.classList.remove("hidden2");
+        trackSection.scrollIntoView({
+          behavior: "smooth", // Use smooth scrolling animation
+          block: "start", // Scroll to the top of the element
+          inline: "nearest",
+        });
       });
   }
 }
@@ -221,4 +232,19 @@ function createEmbed(trackId) {
   clonedIframe.src = clonedIframe.src.replace("TRACKID", trackId);
 
   embedSection.appendChild(clonedIframe);
+}
+
+//changes the value of amount based on the user input
+function changeAmount() {
+  const possibleAmount = suggestionAmount.value;
+  if (
+    isNaN(possibleAmount) ||
+    Number(possibleAmount) > 10 ||
+    Number(possibleAmount) < 1
+  ) {
+    alert("Please enter a number between 1 and 10");
+    return;
+  }
+  amount = suggestionAmount.value;
+  alert("Amount changed to " + amount);
 }
