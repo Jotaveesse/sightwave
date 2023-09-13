@@ -18,7 +18,7 @@ def compare_features(features1, features2):
         abs(features1["tempo"] - features2["tempo"]) / 120
     )  # range is from 60-180
     total_diff += (
-        abs(features1["valence"] - features2["valence"]) * 3
+        abs(features1["valence"] - features2["valence"]) * 4
     )  # extra weight for valence
 
     # using jaccard similarity to compare genres
