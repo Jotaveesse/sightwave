@@ -19,7 +19,7 @@ body {
   box-sizing: border-box;
 }
 
-input {
+.file-input {
   font-family: "Queensides";
   font-size: 1em;
   background-color: #444;
@@ -40,7 +40,6 @@ button {
   font-weight: 100;
   width: 100%;
   height: 48px;
-  margin: auto;
   border: none;
   border-radius: 8px;
 }
@@ -112,7 +111,8 @@ button:hover {
 }
 
 #url-send-button {
-  width: 15%;
+  width: auto;
+  min-width: 15%;
   height: 100%;
   border-radius: 0px 0px 16px 0px;
 }
@@ -177,15 +177,44 @@ button:hover {
 }
 
 #button-section {
-  background-color: #121212;
-  height: calc(70vh + 48px);
+  display: flex;
 }
 
 #button-area {
-  display: flex;
+  background-color: #121212;
   height: 100%;
+  display: flex;
   flex-wrap: wrap;
-  padding: 0px 20%;
+  justify-content: center;
+  align-items: center;
+}
+
+.middle-button {
+  width: 70%;
+}
+
+#amount-setter {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+}
+
+#amount-setter input {
+  width: 8.7em;
+  background-color: #444;
+  color: white;
+  font-family: "Queensides";
+  font-size: 1em;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 0.25rem;
+  margin-right: 0.2em;
+}
+
+#amount-setter button {
+  width: fit-content;
+  border-radius: 0.25rem;
 }
 
 #loading-area {
@@ -215,8 +244,10 @@ button:hover {
 
 #track-section {
   background-color: #242424;
+  display: block;
   max-height: calc(70vh + 48px);
   border-radius: 16px;
+  overflow-y: auto;
 }
 
 #embed-section {
@@ -233,7 +264,7 @@ button:hover {
 }
 
 #lyrics-section {
-  height: calc(100% - 158px);
+  height: auto;
   font-size: 1.1em;
   font-weight: 600;
   overflow-y: auto;
@@ -255,5 +286,15 @@ button:hover {
 
   .hidden2 {
     display: none !important;
+  }
+
+  #button-area {
+    align-items: flex-start;
+  }
+}
+
+@media screen and (max-width: 1060px) {
+  #amount-setter input {
+    width: 40%;
   }
 }

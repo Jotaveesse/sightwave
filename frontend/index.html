@@ -26,6 +26,7 @@
                 <button id="select_file_button">Select</button>
                 <input
                   type="file"
+                  class="file-input"
                   id="file-input"
                   style="display: none"
                   placeholder="Insira a URL de uma imagem"
@@ -34,7 +35,7 @@
             </div>
             <div id="image-upload-bottom">
               <div id="url-input">
-                <input type="url" />
+                <input class="file-input" type="url" />
               </div>
               <button id="url-send-button">Enviar</button>
             </div>
@@ -51,6 +52,14 @@
         </div>
         <div id="button-section">
           <div id="button-area">
+            <div id="amount-setter">
+              <input
+                type="text"
+                id="amount-of-suggestions"
+                placeholder="número de músicas"
+              />
+              <button onclick="changeAmount()">Definir</button>
+            </div>
             <button
               class="middle-button"
               id="submit-lyrics-button"
@@ -75,7 +84,6 @@
               Pesquisa Dupla
             </button>
           </div>
-
           <div id="loading-area" class="hidden">
             <div id="loading-icon">
               <div class="boxContainer">
