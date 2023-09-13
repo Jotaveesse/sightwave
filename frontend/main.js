@@ -35,6 +35,7 @@ window.onload = function () {
   fileDropArea = document.getElementById("file_drop_area");
   buttonArea = document.getElementById("button-area");
   loadingArea = document.getElementById("loading-area");
+  trackSection = document.getElementById("track-section");
 
   sendButton = document.getElementById("end-button");
   sendAnotherButton = document.getElementById("send-another-button");
@@ -114,6 +115,7 @@ function searchTrack(searchOption) {
   if (currUrl !== null || currImage !== null) {
     toggleVisibility(loadingArea);
     toggleVisibility(buttonArea);
+    trackSection.classList.add("hidden2");
 
     let requestPromise;
     let params;
@@ -145,6 +147,12 @@ function searchTrack(searchOption) {
       .finally(() => {
         toggleVisibility(loadingArea);
         toggleVisibility(buttonArea);
+        trackSection.classList.remove("hidden2");
+        trackSection.scrollIntoView({
+          behavior: "smooth", // Use smooth scrolling animation
+          block: "start", // Scroll to the top of the element
+          inline: "nearest",
+        });
       });
   }
 }

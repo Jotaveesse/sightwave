@@ -185,48 +185,32 @@ button:hover {
   display: flex;
   height: 100%;
   flex-wrap: wrap;
-  padding: 0px 60px;
-}
-
-.middle-button {
-  width: 100%;
-}
-
-#literal-button {
-  width: 100%;
-}
-
-#submit-lyrics-button {
-}
-
-#sentimental-button {
-  width: 100%;
-}
-
-#both-button {
-  width: 100%;
-}
-
-#submit-feats-button {
+  padding: 0px 20%;
 }
 
 #loading-area {
   width: 100%;
   height: 100%;
-  padding: 60px;
+  display: flex;
+  justify-content: center;
   box-sizing: border-box;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 #loading-icon {
   display: flex;
-  width: 100%;
+  width: 80%;
   height: 70%;
 }
 
 #loading-text {
-  height: 30%;
+  height: 30%; /* Allow the height to adjust based on content */
   font-size: 2.3em;
   text-align: center;
+  width: 80%;
+  overflow: auto; /* Enable scrollbars when content overflows */
+  word-wrap: break-word;
 }
 
 #track-section {
@@ -255,4 +239,21 @@ button:hover {
   overflow-y: auto;
   padding: 0px 12px 8px 12px;
   box-sizing: border-box;
+}
+
+@media screen and (max-width: 865px) {
+  #content {
+    grid-template-columns: 1fr 1fr; /* Two columns with equal width */
+    grid-template-rows: auto auto;
+    row-gap: 24px;
+  }
+
+  #track-section {
+    grid-column: 1 / -1;
+    height: calc(70vh + 48px);
+  }
+
+  .hidden2 {
+    display: none !important;
+  }
 }
