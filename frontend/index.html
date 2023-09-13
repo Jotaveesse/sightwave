@@ -1,106 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image To Lyrics</title>
-    <link rel="icon" type="image/png" href="images/sightwave-logo2.png">
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/loading.css">
+    <link rel="icon" type="image/png" href="images/sightwave-logo2.png" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/loading.css" />
     <script src="main.js"></script>
     <script src="requester.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="main">
-        <div id="title">
-            <img src="images/sightwave.png">
+      <div id="title">
+        <img src="images/sightwave.png" />
+      </div>
+      <div id="content">
+        <div id="image-section">
+          <div id="image-upload">
+            <div id="image-upload-top">
+              <div class="drop_area" id="file_drop_area">
+                <span>Arraste e solte ou selecione um arquivo</span>
+                <img src="images/upload.png" />
+                <button id="select_file_button">Select</button>
+                <input
+                  type="file"
+                  class="file-input"
+                  id="file-input"
+                  style="display: none"
+                  placeholder="Insira a URL de uma imagem"
+                />
+              </div>
+            </div>
+            <div id="image-upload-bottom">
+              <div id="url-input">
+                <input class="file-input" type="url" />
+              </div>
+              <button id="url-send-button">Enviar</button>
+            </div>
+          </div>
+
+          <div id="image-display" class="hidden">
+            <div id="image-display-top">
+              <img id="image-display-area" src="#" alt="Uploaded Image" />
+            </div>
+            <div id="image-display-bottom">
+              <button id="send-another-button">Enviar outra imagem</button>
+            </div>
+          </div>
         </div>
-        <div id="content">
-            <div id="image-section">
-                <div id="image-upload">
-                    <div id="image-upload-top">
-                        <div class="drop_area" id="file_drop_area">
-                            <span>Arraste e solte ou selecione um arquivo</span>
-                            <img src="images/upload.png">
-                            <button id="select_file_button">Select</button>
-                            <input type="file" id="file-input" style="display: none;" placeholder="Insira a URL de uma imagem">
-                        </div>
-
-                    </div>
-                    <div id="image-upload-bottom">
-                        <div id="url-input">
-                            <input type="url">
-                        </div>
-                            <button id="url-send-button">Enviar</button>
-                    </div>
-                </div>
-
-                <div id="image-display" class="hidden">
-                    <div id="image-display-top">
-                        <img id="image-display-area" src="#" alt="Uploaded Image">
-                    </div>
-                    <div id="image-display-bottom">
-                        <button id="send-another-button">Enviar outra imagem</button>
-                    </div>
-                </div>
+        <div id="button-section">
+          <div id="button-area">
+            <div id="amount-setter">
+              <input
+                type="text"
+                id="amount-of-suggestions"
+                placeholder="número de músicas"
+              />
+              <button onclick="changeAmount()">Definir</button>
             </div>
-            <div id="button-section">
-                <div id="button-area">
-                        <button class="middle-button" id="submit-lyrics-button" onclick="searchTrack('literal')">Pesquisa Literal</button>
+            <button
+              class="middle-button"
+              id="submit-lyrics-button"
+              onclick="searchTrack('literal')"
+            >
+              Pesquisa Literal
+            </button>
 
-                        <button class="middle-button" id="submit-image-button" onclick="searchTrack('emotional')">Pesquisa Emocional</button>
+            <button
+              class="middle-button"
+              id="submit-image-button"
+              onclick="searchTrack('emotional')"
+            >
+              Pesquisa Emocional
+            </button>
 
-                        <button class="middle-button" id="submit-feats-button" onclick="searchTrack('both')">Pesquisa Dupla</button>
-                </div>
-
-                <div id="loading-area" class="hidden">
-                    <div id="loading-icon">
-                        <div class="boxContainer">
-                            <div class="box box1"></div>
-                            <div class="box box2"></div>
-                            <div class="box box3"></div>
-                            <div class="box box4"></div>
-                            <div class="box box5"></div>
-                            <div class="box box6"></div>
-                            <div class="box box7"></div>
-                            <div class="box box8"></div>
-                            <div class="box box9"></div>
-                            <div class="box box10"></div>
-                            <div class="box box11"></div>
-                            <div class="box box12"></div>
-                            <div class="box box13"></div>
-                            <div class="box box14"></div>
-                            <div class="box box15"></div>
-                            <div class="box box16"></div>
-                          </div>
-                    </div>
-                    <div id="loading-text">
-                        Processando
-                    </div>
-                </div>
+            <button
+              class="middle-button"
+              id="submit-feats-button"
+              onclick="searchTrack('both')"
+            >
+              Pesquisa Dupla
+            </button>
+          </div>
+          <div id="loading-area" class="hidden">
+            <div id="loading-icon">
+              <div class="boxContainer">
+                <div class="box box1"></div>
+                <div class="box box2"></div>
+                <div class="box box3"></div>
+                <div class="box box4"></div>
+                <div class="box box5"></div>
+                <div class="box box6"></div>
+                <div class="box box7"></div>
+                <div class="box box8"></div>
+                <div class="box box9"></div>
+                <div class="box box10"></div>
+                <div class="box box11"></div>
+                <div class="box box12"></div>
+                <div class="box box13"></div>
+                <div class="box box14"></div>
+                <div class="box box15"></div>
+                <div class="box box16"></div>
+              </div>
             </div>
-            <div id="track-section">
-                <div id="embed-section">
-
-                </div>
-                <div id="lyrics-section">
-                    <div id="lyrics-text">
-
-                    </div>
-                </div>
-            </div>
+            <div id="loading-text">Processando</div>
+          </div>
         </div>
+        <div id="track-section" class="hidden2">
+          <div id="embed-section"></div>
+          <div id="lyrics-section">
+            <div id="lyrics-text"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <template id="embed-iframe-template">
-        <iframe class="embed-iframe" style="border-radius:12px"
-            src="https://open.spotify.com/embed/track/TRACKID?utm_source=generator&theme=0" width="100%" height="154px"
-            frameBorder="0" allowfullscreen=""
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
-        </iframe>
+      <iframe
+        class="embed-iframe"
+        style="border-radius: 12px"
+        src="https://open.spotify.com/embed/track/TRACKID?utm_source=generator&theme=0"
+        width="100%"
+        height="154px"
+        frameborder="0"
+        allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      >
+      </iframe>
     </template>
-</body>
-
+  </body>
 </html>
