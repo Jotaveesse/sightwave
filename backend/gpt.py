@@ -41,7 +41,7 @@ def get_image_feats(description):
             )
 
     chat = openai.ChatCompletion.create(
-                model="gpt-4", messages=messages)
+                model="gpt-3.5-turbo", messages=messages)
     reply = chat.choices[0].message.content
     json_reply = json.loads(reply)
 

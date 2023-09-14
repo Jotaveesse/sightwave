@@ -246,4 +246,5 @@ function changeAmount() {
     return;
   }
   amount = suggestionAmount.value;
+  alert("Amount changed to " + amount);
 }
