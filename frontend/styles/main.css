@@ -117,6 +117,10 @@ button:hover {
   border-radius: 0px 0px 16px 0px;
 }
 
+.button-arrow {
+  height: 70%;  
+}
+
 #image-display {
   width: fit-content;
   height: fit-content;
@@ -149,6 +153,7 @@ button:hover {
   text-align: center;
   font-size: 1.2em;
 }
+
 .drop_area button {
   height: 48px;
   background-color: #444;
@@ -198,23 +203,52 @@ button:hover {
   height: 48px;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 #amount-setter input {
-  width: 8.7em;
-  background-color: #444;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 60%;
+  background-color: #242424;
   color: white;
   font-family: "Queensides";
   font-size: 1em;
-  padding: 6px 12px;
+  height: 16px;
   border: none;
   border-radius: 0.25rem;
-  margin-right: 0.2em;
+  background: #242424;
+  outline: none;
+  -webkit-transition: opacity .15s ease-in-out;
+  transition: opacity .15s ease-in-out;
 }
 
-#amount-setter button {
-  width: fit-content;
-  border-radius: 0.25rem;
+#amount-setter input:hover {
+  background-color: #303030;
+}
+
+#amount-setter input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: #444;
+  cursor: pointer;
+}
+
+#amount-setter input::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: #444;
+  cursor: pointer;
+}
+
+#amount-setter span {
+  font-size: 1.2em;
+  ;
+  width: 100%;
+  text-align: center;
 }
 
 #loading-area {
@@ -234,11 +268,13 @@ button:hover {
 }
 
 #loading-text {
-  height: 30%; /* Allow the height to adjust based on content */
+  height: 30%;
+  /* Allow the height to adjust based on content */
   font-size: 2.3em;
   text-align: center;
   width: 80%;
-  overflow: auto; /* Enable scrollbars when content overflows */
+  overflow: auto;
+  /* Enable scrollbars when content overflows */
   word-wrap: break-word;
 }
 
@@ -274,7 +310,8 @@ button:hover {
 
 @media screen and (max-width: 865px) {
   #content {
-    grid-template-columns: 1fr 1fr; /* Two columns with equal width */
+    grid-template-columns: 1fr 1fr;
+    /* Two columns with equal width */
     grid-template-rows: auto auto;
     row-gap: 24px;
   }
@@ -284,10 +321,6 @@ button:hover {
     height: calc(70vh + 48px);
   }
 
-  .hidden2 {
-    display: none !important;
-  }
-
   #button-area {
     align-items: flex-start;
   }
@@ -295,6 +328,6 @@ button:hover {
 
 @media screen and (max-width: 1060px) {
   #amount-setter input {
-    width: 40%;
+    width: 70%;
   }
 }

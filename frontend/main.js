@@ -13,7 +13,8 @@ var imageUpload,
   imageSendButton,
   openFileButton,
   embedSection,
-  embedTemplate;
+  embedTemplate,
+  sliderValue;
 
 var currUrl = null;
 var currImage = null;
@@ -46,6 +47,8 @@ window.onload = function () {
 
   embedTemplate = document.getElementById("embed-iframe-template");
   embedSection = document.getElementById("embed-section");
+
+  sliderValue = document.getElementById("slider-value");
 
   imageUpload.addEventListener("dragover", function (e) {
     e.preventDefault();
@@ -111,12 +114,18 @@ window.onload = function () {
   });
 };
 
+var IFrameAPI;
+window.onSpotifyIframeApiReady = (API) => {
+  IFrameAPI = API;
+  // createIFrame("2enPRFda84VE2wtI8c86Uf")
+};
+
 //pesquisa por uma musica usando a api
 function searchTrack(searchOption) {
   if (currUrl !== null || currImage !== null) {
     toggleVisibility(loadingArea);
     toggleVisibility(buttonArea);
-    trackSection.classList.add("hidden2");
+    toggleVisibility(trackSection, false)
 
     let requestPromise;
     let params;
@@ -143,12 +152,13 @@ function searchTrack(searchOption) {
         displayTracks(data);
       })
       .catch((error) => {
-       alert("Error: " + error);
+        alert("Error: " + error);
       })
       .finally(() => {
         toggleVisibility(loadingArea);
         toggleVisibility(buttonArea);
-        trackSection.classList.remove("hidden2");
+        toggleVisibility(trackSection, true)
+
         trackSection.scrollIntoView({
           behavior: "smooth", // Use smooth scrolling animation
           block: "start", // Scroll to the top of the element
@@ -164,7 +174,6 @@ function displayTracks(tracks) {
   iframes.forEach((element) => {
     element.remove();
   });
-
 
   tracks.forEach((track) => {
     if (track != null) {
@@ -188,6 +197,35 @@ function displayTracks(tracks) {
       }
     }
   });
+}
+
+//cria o embed to spotify
+function createEmbed(trackId) {
+  var embed = embedTemplate.content.cloneNode(true);
+  var lyricsSection = embed.querySelector(".lyrics-section");
+  var clonedIframe = embed.querySelector("iframe");
+  embedSection.appendChild(embed);
+
+
+  const options = {
+    class: "embed-iframe",
+    style: "border-radius: 120px; background-color:#333",
+    width: '100%',
+    height: '154px',
+    uri: 'spotify:track:' + trackId
+  };
+
+  const callback = (embedController) => {
+    embedController.addListener('playback_update', e => {
+      console.log(e);
+      toggleVisibility(lyricsSection, !e.data.isPaused);
+    });
+
+
+  };
+  IFrameAPI.createController(clonedIframe, options, callback);
+
+  return lyricsSection;
 }
 
 // pega o arquivo e armazena como base64
@@ -222,19 +260,15 @@ function isImageURLValid(url, callback) {
 }
 
 //esconde ou mostra o componente escolhido
-function toggleVisibility(element) {
-  element.classList.toggle("hidden");
-}
-
-//cria o embed to spotify
-function createEmbed(trackId) {
-  var embed = embedTemplate.content.cloneNode(true);
-  var clonedIframe = embed.querySelector("iframe");
-  clonedIframe.src = clonedIframe.src.replace("TRACKID", trackId);
-
-  embedSection.appendChild(embed);
-  
-  return embedSection.lastElementChild;
+function toggleVisibility(element, visible = null) {
+  if (visible == null)
+    element.classList.toggle("hidden");
+  else {
+    if (visible)
+      element.classList.remove("hidden");
+    else
+      element.classList.add("hidden");
+  }
 }
 
 //changes the value of amount based on the user input
@@ -242,12 +276,12 @@ function changeAmount() {
   const possibleAmount = suggestionAmount.value;
   if (
     isNaN(possibleAmount) ||
-    Number(possibleAmount) > 10 ||
+    Number(possibleAmount) > 8 ||
     Number(possibleAmount) < 1
   ) {
-    alert("Please enter a number between 1 and 10");
+    alert("Insira um número entre 1 e 8");
     return;
   }
   trackAmount = suggestionAmount.value;
-  alert("Amount changed to " + trackAmount);
+  sliderValue.textContent = "Buscar " + trackAmount + (trackAmount == 1 ? " Música" : " Músicas");
 }
