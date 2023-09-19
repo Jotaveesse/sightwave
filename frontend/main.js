@@ -50,6 +50,8 @@ window.onload = function () {
 
   sliderValue = document.getElementById("slider-value");
 
+  changeAmount();
+
   imageUpload.addEventListener("dragover", function (e) {
     e.preventDefault();
   });
@@ -155,8 +157,8 @@ function searchTrack(searchOption) {
         alert("Error: " + error);
       })
       .finally(() => {
-        toggleVisibility(loadingArea);
-        toggleVisibility(buttonArea);
+        toggleVisibility(loadingArea, false);
+        toggleVisibility(buttonArea, true);
         toggleVisibility(trackSection, true)
 
         trackSection.scrollIntoView({
@@ -184,17 +186,41 @@ function displayTracks(tracks) {
 
       lyricsText.innerHTML = "";
 
-      //para cada pedaço da letra
-      for (var i = 0; i < track.lyrics.length; i++) {
-        var hasMatchedSection = track.matched_section_id != -1;
-        var isMatchedSection =
-          i >= track.matched_section_id && i <= track.matched_section_id + 2;
+      if (track.timestamped_lyrics.length > 0) {
 
-        //colocar uma cor diferente na parte da letra que deu match
-        if (hasMatchedSection && isMatchedSection) {
-          lyricsText.innerHTML += `<div style="background-color:#661144">${track.lyrics[i]}</div>`;
-        } else lyricsText.innerHTML += `<div>${track.lyrics[i]}</div>`;
+        //para cada pedaço da letra
+        for (var i = 0; i < track.timestamped_lyrics.length; i++) {
+          var currTrackLyrics = track.timestamped_lyrics[i];
+
+          // var hasMatchedSection = track.matched_section_id != -1;
+          // var isMatchedSection =
+          //   i >= track.matched_section_id && i <= track.matched_section_id + 2;
+
+          // //colocar uma cor diferente na parte da letra que deu match
+          // if (hasMatchedSection && isMatchedSection) {
+          //   lyricsText.innerHTML += `<div time= ${currTrackLyrics.startTimeMs} style="background-color:#661144">${currTrackLyrics.words}</div>`;
+          // } else lyricsText.innerHTML += `<div time= ${currTrackLyrics.startTimeMs}>${currTrackLyrics.words}</div>`;
+
+          lyricsText.innerHTML += `<div time= ${currTrackLyrics.startTimeMs}>${currTrackLyrics.words}</div>`;
+        }
       }
+      else {
+        //para cada pedaço da letra
+        for (var i = 0; i < track.lyrics.length; i++) {
+          // var hasMatchedSection = track.matched_section_id != -1;
+          // var isMatchedSection =
+          //   i >= track.matched_section_id && i <= track.matched_section_id + 2;
+
+          // //colocar uma cor diferente na parte da letra que deu match
+          // if (hasMatchedSection && isMatchedSection) {
+          //   lyricsText.innerHTML += `<div style="background-color:#661144">${track.lyrics[i]}</div>`;
+          // } else lyricsText.innerHTML += `<div>${track.lyrics[i]}</div>`;
+
+          lyricsText.innerHTML += `<div time="-1">${track.lyrics[i]}</div>`;
+        }
+      }
+
+
     }
   });
 }
@@ -203,8 +229,10 @@ function displayTracks(tracks) {
 function createEmbed(trackId) {
   var embed = embedTemplate.content.cloneNode(true);
   var lyricsSection = embed.querySelector(".lyrics-section");
+  var lyricsText = embed.querySelector(".lyrics-text");
   var clonedIframe = embed.querySelector("iframe");
   embedSection.appendChild(embed);
+  var embedElem = embedSection.lastElementChild;
 
 
   const options = {
@@ -217,8 +245,22 @@ function createEmbed(trackId) {
 
   const callback = (embedController) => {
     embedController.addListener('playback_update', e => {
-      console.log(e);
+      //console.log(e);
+
+      var prevVis = lyricsSection.classList.contains("hidden");
       toggleVisibility(lyricsSection, !e.data.isPaused);
+      var currVis = lyricsSection.classList.contains("hidden");
+
+      //para scrollar para musica somente quando ela começar a tocar
+      if (currVis != prevVis && currVis == false) {
+        embedElem.scrollIntoView({
+          behavior: "smooth", // Use smooth scrolling animation
+          block: "start", // Scroll to the top of the element
+          inline: "nearest",
+        });
+      }
+
+      highlightLyricsLine(lyricsText, e.data.position);
     });
 
 
@@ -226,6 +268,28 @@ function createEmbed(trackId) {
   IFrameAPI.createController(clonedIframe, options, callback);
 
   return lyricsSection;
+}
+
+function highlightLyricsLine(lyrics, time) {
+  var lines = lyrics.childNodes;
+
+  for (let i = 0; i < lines.length; i++) {
+    var currLineTime = lines[i].attributes.time.value;
+
+    //checa se o tempo da linha atual é maior que o tempo
+    if (currLineTime > time && i >= 1) {
+      var prevLineTime = lines[i-1].attributes.time.value;
+
+      //checa se o tempo da anterior é maior que o tempo pra acender a primeira linha na hora
+      if (prevLineTime < time)
+        lines[i - 1].classList.add("highlighted-line");
+      else 
+        lines[i].classList.remove("highlighted-line");
+    }
+    else 
+      lines[i].classList.remove("highlighted-line");
+  }
+
 }
 
 // pega o arquivo e armazena como base64
