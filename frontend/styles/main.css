@@ -255,15 +255,15 @@ button:hover {
   height: fit-content;
 }
 
-#lyrics-section::-webkit-scrollbar {
+.lyrics-section::-webkit-scrollbar {
   display: none;
 }
 
-#lyrics-section::-webkit-scrollbar-thumb {
+.lyrics-section::-webkit-scrollbar-thumb {
   display: none;
 }
 
-#lyrics-section {
+.lyrics-section {
   height: auto;
   font-size: 1.1em;
   font-weight: 600;

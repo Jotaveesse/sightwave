@@ -13,12 +13,11 @@ var imageUpload,
   imageSendButton,
   openFileButton,
   embedSection,
-  lyricsText,
   embedTemplate;
 
 var currUrl = null;
 var currImage = null;
-var amount = 1;
+var trackAmount = 1;
 
 const apiUrl = window.location.origin + "/api/search/";
 //const apiUrl = 'https://image-to-lyrics.vercel.app/api/search/'
@@ -46,14 +45,13 @@ window.onload = function () {
   openFileButton = document.getElementById("select_file_button");
 
   embedTemplate = document.getElementById("embed-iframe-template");
-  lyricsText = document.getElementById("lyrics-text");
   embedSection = document.getElementById("embed-section");
 
   imageUpload.addEventListener("dragover", function (e) {
     e.preventDefault();
   });
 
-  // deixa o componenete mais claro quando tem algum arquivo sendo arrastado
+  // deixa o componente mais claro quando tem algum arquivo sendo arrastado
   imageUploadTop.addEventListener("dragenter", function (e) {
     e.preventDefault();
     const children = imageUploadTop.children;
@@ -79,7 +77,7 @@ window.onload = function () {
     handleFiles(files);
   });
 
-  //reseta os valores da imagem selecioanda
+  //reseta os valores da imagem selecionada
   sendAnotherButton.addEventListener("click", function (e) {
     currUrl = null;
     currImage = null;
@@ -126,7 +124,7 @@ function searchTrack(searchOption) {
     if (currUrl !== null) {
       params = {
         url: currUrl,
-        amount: amount,
+        amount: trackAmount,
       };
       requestPromise = getRequest(apiUrl + searchOption, params);
     } else {
@@ -134,7 +132,7 @@ function searchTrack(searchOption) {
         image: currImage,
       };
       params = {
-        amount: amount,
+        amount: trackAmount,
       };
       requestPromise = postRequest(apiUrl + searchOption, body, params);
     }
@@ -145,7 +143,7 @@ function searchTrack(searchOption) {
         displayTracks(data);
       })
       .catch((error) => {
-        lyricsText.innerHTML = "Error: " + error;
+       alert("Error: " + error);
       })
       .finally(() => {
         toggleVisibility(loadingArea);
@@ -162,29 +160,32 @@ function searchTrack(searchOption) {
 
 //exibe a musica
 function displayTracks(tracks) {
-  var iframes = Array.from(document.getElementsByClassName("embed-iframe"));
+  var iframes = Array.from(document.getElementsByClassName("track-elem"));
   iframes.forEach((element) => {
     element.remove();
   });
 
-  lyricsText.innerHTML = "";
 
   tracks.forEach((track) => {
     if (track != null) {
-      createEmbed(track.id);
       console.log(track);
 
-      // //para cada pedaço da letra
-      // for (var i = 0; i < track.lyrics.length; i++) {
-      //   var hasMatchedSection = track.matched_section_id != -1;
-      //   var isMatchedSection =
-      //     i >= track.matched_section_id && i <= track.matched_section_id + 2;
+      var createdEmbed = createEmbed(track.id);
+      var lyricsText = createdEmbed.getElementsByClassName("lyrics-text")[0];
 
-      //   //colocar uma cor diferente na parte da letra que deu match
-      //   if (hasMatchedSection && isMatchedSection) {
-      //     lyricsText.innerHTML += `<div style="background-color:#661144">${track.lyrics[i]}</div>`;
-      //   } else lyricsText.innerHTML += `<div>${track.lyrics[i]}</div>`;
-      // }
+      lyricsText.innerHTML = "";
+
+      //para cada pedaço da letra
+      for (var i = 0; i < track.lyrics.length; i++) {
+        var hasMatchedSection = track.matched_section_id != -1;
+        var isMatchedSection =
+          i >= track.matched_section_id && i <= track.matched_section_id + 2;
+
+        //colocar uma cor diferente na parte da letra que deu match
+        if (hasMatchedSection && isMatchedSection) {
+          lyricsText.innerHTML += `<div style="background-color:#661144">${track.lyrics[i]}</div>`;
+        } else lyricsText.innerHTML += `<div>${track.lyrics[i]}</div>`;
+      }
     }
   });
 }
@@ -231,7 +232,9 @@ function createEmbed(trackId) {
   var clonedIframe = embed.querySelector("iframe");
   clonedIframe.src = clonedIframe.src.replace("TRACKID", trackId);
 
-  embedSection.appendChild(clonedIframe);
+  embedSection.appendChild(embed);
+  
+  return embedSection.lastElementChild;
 }
 
 //changes the value of amount based on the user input
@@ -245,6 +248,6 @@ function changeAmount() {
     alert("Please enter a number between 1 and 10");
     return;
   }
-  amount = suggestionAmount.value;
-  alert("Amount changed to " + amount);
+  trackAmount = suggestionAmount.value;
+  alert("Amount changed to " + trackAmount);
 }

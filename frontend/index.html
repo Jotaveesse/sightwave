@@ -111,14 +111,13 @@
         </div>
         <div id="track-section" class="hidden2">
           <div id="embed-section"></div>
-          <div id="lyrics-section">
-            <div id="lyrics-text"></div>
-          </div>
+         
         </div>
       </div>
     </div>
 
     <template id="embed-iframe-template">
+      <div class="track-elem">
       <iframe
         class="embed-iframe"
         style="border-radius: 12px"
@@ -131,6 +130,12 @@
         loading="lazy"
       >
       </iframe>
+
+      <div class="lyrics-section">
+        <div class="lyrics-text"></div>
+      </div>
+
+    </div>
     </template>
   </body>
 </html>
