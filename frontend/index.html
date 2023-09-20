@@ -14,10 +14,25 @@
 </head>
 
 <body>
+  <div id="login-popup" class="hidden">
+    <div id="popup-content">
+      <button id="login-top" onclick="closePopup()"">
+        <img id="login-close" src="images/close.png" />
+      </button>
+      <div id="login-text">
+        Faça login pelo spotify para conseguir escutar as músicas completas
+      </div>
+      <a 
+      href="https://accounts.spotify.com/authorize?client_id=c660052af18c4c00b43025d29fc4391a&response_type=token&redirect_uri=http%3A%2F%2Flocalhost%3A8000&scope=user-read-private%20user-read-email"
+        id="login-link"> Login com Spotify</a>
+    </div>
+  </div>
   <div id="main">
     <div id="title">
       <img src="images/sightwave.png" />
     </div>
+
+
     <div id="content">
       <div id="image-section">
         <div id="image-upload">

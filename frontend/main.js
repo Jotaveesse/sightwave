@@ -14,7 +14,8 @@ var imageUpload,
   openFileButton,
   embedSection,
   embedTemplate,
-  sliderValue;
+  sliderValue,
+  popup;
 
 var currUrl = null;
 var currImage = null;
@@ -22,6 +23,14 @@ var trackAmount = 1;
 
 const apiUrl = window.location.origin + "/api/search/";
 //const apiUrl = 'https://image-to-lyrics.vercel.app/api/search/'
+
+
+const spotifyClientId = "c660052af18c4c00b43025d29fc4391a";
+const fullUrl = window.location.href;
+
+const urlParams = new URLSearchParams(fullUrl.split('#')[1]);
+
+const accessToken = urlParams.get("access_token");
 
 window.onload = function () {
   imageUpload = document.getElementById("image-upload");
@@ -50,7 +59,16 @@ window.onload = function () {
 
   sliderValue = document.getElementById("slider-value");
 
+  popup = document.getElementById("login-popup");
+
+  //atualiza o slider
   changeAmount();
+  isLogged().then((logged) => {
+    if (logged)
+      closePopup();
+    else
+      toggleVisibility(popup, true);
+  });
 
   imageUpload.addEventListener("dragover", function (e) {
     e.preventDefault();
@@ -278,18 +296,21 @@ function highlightLyricsLine(lyrics, time) {
 
     //checa se o tempo da linha atual é maior que o tempo
     if (currLineTime > time && i >= 1) {
-      var prevLineTime = lines[i-1].attributes.time.value;
+      var prevLineTime = lines[i - 1].attributes.time.value;
 
       //checa se o tempo da anterior é maior que o tempo pra acender a primeira linha na hora
       if (prevLineTime < time)
         lines[i - 1].classList.add("highlighted-line");
-      else 
+      else
         lines[i].classList.remove("highlighted-line");
     }
-    else 
+    else
       lines[i].classList.remove("highlighted-line");
   }
+}
 
+function closePopup() {
+  toggleVisibility(popup, false);
 }
 
 // pega o arquivo e armazena como base64
@@ -349,3 +370,24 @@ function changeAmount() {
   trackAmount = suggestionAmount.value;
   sliderValue.textContent = "Buscar " + trackAmount + (trackAmount == 1 ? " Música" : " Músicas");
 }
+
+async function isLogged() {
+  var logged = false;
+  await fetch('https://api.spotify.com/v1/me', {
+    headers: { 'Authorization': 'Bearer ' + accessToken }
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error && data.error.status === 401) {
+        logged = false;
+      } else {
+        logged = true;
+      }
+    })
+    .catch(err => {
+      logged = false;
+    });
+
+  return logged;
+}
+
