@@ -15,7 +15,8 @@ var imageUpload,
   embedSection,
   embedTemplate,
   sliderValue,
-  popup;
+  popup,
+  loginLink;
 
 var currUrl = null;
 var currImage = null;
@@ -66,6 +67,9 @@ window.onload = function () {
 
   popup = document.getElementById("login-popup");
 
+  loginLink = document.getElementById("login-link");
+
+  loginLink.href =`https://accounts.spotify.com/authorize?client_id=${spotifyClientId}&redirect_uri=${ window.location.origin}&response_type=token&scope=user-read-private%20user-read-email`;
   //atualiza o slider
   changeAmount();
   isLogged().then((logged) => {
@@ -301,7 +305,7 @@ function highlightLyricsLine(lyrics, time) {
       if (prevLineTime < time)
         lines[i - 1].classList.add("highlighted-line");
       else
-        lines[i-1].classList.remove("highlighted-line");
+        lines[i - 1].classList.remove("highlighted-line");
     }
     else
       lines[i].classList.remove("highlighted-line");
