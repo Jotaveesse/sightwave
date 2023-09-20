@@ -21,6 +21,11 @@ var currUrl = null;
 var currImage = null;
 var trackAmount = 1;
 
+var IFrameAPI;
+window.onSpotifyIframeApiReady = (API) => {
+  IFrameAPI = API;
+};
+
 const apiUrl = window.location.origin + "/api/search/";
 //const apiUrl = 'https://image-to-lyrics.vercel.app/api/search/'
 
@@ -132,12 +137,6 @@ window.onload = function () {
   fileInput.addEventListener("change", () => {
     handleFiles(fileInput.files);
   });
-};
-
-var IFrameAPI;
-window.onSpotifyIframeApiReady = (API) => {
-  IFrameAPI = API;
-  // createIFrame("2enPRFda84VE2wtI8c86Uf")
 };
 
 //pesquisa por uma musica usando a api
@@ -302,7 +301,7 @@ function highlightLyricsLine(lyrics, time) {
       if (prevLineTime < time)
         lines[i - 1].classList.add("highlighted-line");
       else
-        lines[i].classList.remove("highlighted-line");
+        lines[i-1].classList.remove("highlighted-line");
     }
     else
       lines[i].classList.remove("highlighted-line");
@@ -324,8 +323,8 @@ function handleFiles(files) {
       currImage = reader.result;
       imageDisplayArea.src = reader.result;
 
-      toggleVisibility(imageDisplay);
-      toggleVisibility(imageUpload);
+      toggleVisibility(imageDisplay, true);
+      toggleVisibility(imageUpload, false);
     };
 
     reader.readAsDataURL(selectedFile);
