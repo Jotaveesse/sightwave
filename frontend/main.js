@@ -13,15 +13,30 @@ var imageUpload,
   imageSendButton,
   openFileButton,
   embedSection,
-  lyricsText,
-  embedTemplate;
+  embedTemplate,
+  sliderValue,
+  popup,
+  loginLink;
 
 var currUrl = null;
 var currImage = null;
-var amount = 1;
+var trackAmount = 1;
+
+var IFrameAPI;
+window.onSpotifyIframeApiReady = (API) => {
+  IFrameAPI = API;
+};
 
 const apiUrl = window.location.origin + "/api/search/";
 //const apiUrl = 'https://image-to-lyrics.vercel.app/api/search/'
+
+
+const spotifyClientId = "c660052af18c4c00b43025d29fc4391a";
+const fullUrl = window.location.href;
+
+const urlParams = new URLSearchParams(fullUrl.split('#')[1]);
+
+const accessToken = urlParams.get("access_token");
 
 window.onload = function () {
   imageUpload = document.getElementById("image-upload");
@@ -46,14 +61,29 @@ window.onload = function () {
   openFileButton = document.getElementById("select_file_button");
 
   embedTemplate = document.getElementById("embed-iframe-template");
-  lyricsText = document.getElementById("lyrics-text");
   embedSection = document.getElementById("embed-section");
+
+  sliderValue = document.getElementById("slider-value");
+
+  popup = document.getElementById("login-popup");
+
+  loginLink = document.getElementById("login-link");
+
+  loginLink.href =`https://accounts.spotify.com/authorize?client_id=${spotifyClientId}&redirect_uri=${ window.location.origin}&response_type=token&scope=user-read-private%20user-read-email`;
+  //atualiza o slider
+  changeAmount();
+  isLogged().then((logged) => {
+    if (logged)
+      closePopup();
+    else
+      toggleVisibility(popup, true);
+  });
 
   imageUpload.addEventListener("dragover", function (e) {
     e.preventDefault();
   });
 
-  // deixa o componenete mais claro quando tem algum arquivo sendo arrastado
+  // deixa o componente mais claro quando tem algum arquivo sendo arrastado
   imageUploadTop.addEventListener("dragenter", function (e) {
     e.preventDefault();
     const children = imageUploadTop.children;
@@ -79,7 +109,7 @@ window.onload = function () {
     handleFiles(files);
   });
 
-  //reseta os valores da imagem selecioanda
+  //reseta os valores da imagem selecionada
   sendAnotherButton.addEventListener("click", function (e) {
     currUrl = null;
     currImage = null;
@@ -118,7 +148,7 @@ function searchTrack(searchOption) {
   if (currUrl !== null || currImage !== null) {
     toggleVisibility(loadingArea);
     toggleVisibility(buttonArea);
-    trackSection.classList.add("hidden2");
+    toggleVisibility(trackSection, false)
 
     let requestPromise;
     let params;
@@ -126,7 +156,7 @@ function searchTrack(searchOption) {
     if (currUrl !== null) {
       params = {
         url: currUrl,
-        amount: amount,
+        amount: trackAmount,
       };
       requestPromise = getRequest(apiUrl + searchOption, params);
     } else {
@@ -134,7 +164,7 @@ function searchTrack(searchOption) {
         image: currImage,
       };
       params = {
-        amount: amount,
+        amount: trackAmount,
       };
       requestPromise = postRequest(apiUrl + searchOption, body, params);
     }
@@ -145,12 +175,13 @@ function searchTrack(searchOption) {
         displayTracks(data);
       })
       .catch((error) => {
-        lyricsText.innerHTML = "Error: " + error;
+        alert("Error: " + error);
       })
       .finally(() => {
-        toggleVisibility(loadingArea);
-        toggleVisibility(buttonArea);
-        trackSection.classList.remove("hidden2");
+        toggleVisibility(loadingArea, false);
+        toggleVisibility(buttonArea, true);
+        toggleVisibility(trackSection, true)
+
         trackSection.scrollIntoView({
           behavior: "smooth", // Use smooth scrolling animation
           block: "start", // Scroll to the top of the element
@@ -162,31 +193,127 @@ function searchTrack(searchOption) {
 
 //exibe a musica
 function displayTracks(tracks) {
-  var iframes = Array.from(document.getElementsByClassName("embed-iframe"));
+  var iframes = Array.from(document.getElementsByClassName("track-elem"));
   iframes.forEach((element) => {
     element.remove();
   });
 
-  lyricsText.innerHTML = "";
-
   tracks.forEach((track) => {
     if (track != null) {
-      createEmbed(track.id);
       console.log(track);
 
-      // //para cada pedaço da letra
-      // for (var i = 0; i < track.lyrics.length; i++) {
-      //   var hasMatchedSection = track.matched_section_id != -1;
-      //   var isMatchedSection =
-      //     i >= track.matched_section_id && i <= track.matched_section_id + 2;
+      var createdEmbed = createEmbed(track.id);
+      var lyricsText = createdEmbed.getElementsByClassName("lyrics-text")[0];
 
-      //   //colocar uma cor diferente na parte da letra que deu match
-      //   if (hasMatchedSection && isMatchedSection) {
-      //     lyricsText.innerHTML += `<div style="background-color:#661144">${track.lyrics[i]}</div>`;
-      //   } else lyricsText.innerHTML += `<div>${track.lyrics[i]}</div>`;
-      // }
+      lyricsText.innerHTML = "";
+
+      if (track.timestamped_lyrics.length > 0) {
+
+        //para cada pedaço da letra
+        for (var i = 0; i < track.timestamped_lyrics.length; i++) {
+          var currTrackLyrics = track.timestamped_lyrics[i];
+
+          // var hasMatchedSection = track.matched_section_id != -1;
+          // var isMatchedSection =
+          //   i >= track.matched_section_id && i <= track.matched_section_id + 2;
+
+          // //colocar uma cor diferente na parte da letra que deu match
+          // if (hasMatchedSection && isMatchedSection) {
+          //   lyricsText.innerHTML += `<div time= ${currTrackLyrics.startTimeMs} style="background-color:#661144">${currTrackLyrics.words}</div>`;
+          // } else lyricsText.innerHTML += `<div time= ${currTrackLyrics.startTimeMs}>${currTrackLyrics.words}</div>`;
+
+          lyricsText.innerHTML += `<div time= ${currTrackLyrics.startTimeMs}>${currTrackLyrics.words}</div>`;
+        }
+      }
+      else {
+        //para cada pedaço da letra
+        for (var i = 0; i < track.lyrics.length; i++) {
+          // var hasMatchedSection = track.matched_section_id != -1;
+          // var isMatchedSection =
+          //   i >= track.matched_section_id && i <= track.matched_section_id + 2;
+
+          // //colocar uma cor diferente na parte da letra que deu match
+          // if (hasMatchedSection && isMatchedSection) {
+          //   lyricsText.innerHTML += `<div style="background-color:#661144">${track.lyrics[i]}</div>`;
+          // } else lyricsText.innerHTML += `<div>${track.lyrics[i]}</div>`;
+
+          lyricsText.innerHTML += `<div time="-1">${track.lyrics[i]}</div>`;
+        }
+      }
+
+
     }
   });
+}
+
+//cria o embed to spotify
+function createEmbed(trackId) {
+  var embed = embedTemplate.content.cloneNode(true);
+  var lyricsSection = embed.querySelector(".lyrics-section");
+  var lyricsText = embed.querySelector(".lyrics-text");
+  var clonedIframe = embed.querySelector("iframe");
+  embedSection.appendChild(embed);
+  var embedElem = embedSection.lastElementChild;
+
+
+  const options = {
+    class: "embed-iframe",
+    style: "border-radius: 120px; background-color:#333",
+    width: '100%',
+    height: '154px',
+    uri: 'spotify:track:' + trackId
+  };
+
+  const callback = (embedController) => {
+    embedController.addListener('playback_update', e => {
+      //console.log(e);
+
+      var prevVis = lyricsSection.classList.contains("hidden");
+      toggleVisibility(lyricsSection, !e.data.isPaused);
+      var currVis = lyricsSection.classList.contains("hidden");
+
+      //para scrollar para musica somente quando ela começar a tocar
+      if (currVis != prevVis && currVis == false) {
+        embedElem.scrollIntoView({
+          behavior: "smooth", // Use smooth scrolling animation
+          block: "start", // Scroll to the top of the element
+          inline: "nearest",
+        });
+      }
+
+      highlightLyricsLine(lyricsText, e.data.position);
+    });
+
+
+  };
+  IFrameAPI.createController(clonedIframe, options, callback);
+
+  return lyricsSection;
+}
+
+function highlightLyricsLine(lyrics, time) {
+  var lines = lyrics.childNodes;
+
+  for (let i = 0; i < lines.length; i++) {
+    var currLineTime = lines[i].attributes.time.value;
+
+    //checa se o tempo da linha atual é maior que o tempo
+    if (currLineTime > time && i >= 1) {
+      var prevLineTime = lines[i - 1].attributes.time.value;
+
+      //checa se o tempo da anterior é maior que o tempo pra acender a primeira linha na hora
+      if (prevLineTime < time)
+        lines[i - 1].classList.add("highlighted-line");
+      else
+        lines[i - 1].classList.remove("highlighted-line");
+    }
+    else
+      lines[i].classList.remove("highlighted-line");
+  }
+}
+
+function closePopup() {
+  toggleVisibility(popup, false);
 }
 
 // pega o arquivo e armazena como base64
@@ -200,8 +327,8 @@ function handleFiles(files) {
       currImage = reader.result;
       imageDisplayArea.src = reader.result;
 
-      toggleVisibility(imageDisplay);
-      toggleVisibility(imageUpload);
+      toggleVisibility(imageDisplay, true);
+      toggleVisibility(imageUpload, false);
     };
 
     reader.readAsDataURL(selectedFile);
@@ -221,17 +348,15 @@ function isImageURLValid(url, callback) {
 }
 
 //esconde ou mostra o componente escolhido
-function toggleVisibility(element) {
-  element.classList.toggle("hidden");
-}
-
-//cria o embed to spotify
-function createEmbed(trackId) {
-  var embed = embedTemplate.content.cloneNode(true);
-  var clonedIframe = embed.querySelector("iframe");
-  clonedIframe.src = clonedIframe.src.replace("TRACKID", trackId);
-
-  embedSection.appendChild(clonedIframe);
+function toggleVisibility(element, visible = null) {
+  if (visible == null)
+    element.classList.toggle("hidden");
+  else {
+    if (visible)
+      element.classList.remove("hidden");
+    else
+      element.classList.add("hidden");
+  }
 }
 
 //changes the value of amount based on the user input
@@ -239,12 +364,33 @@ function changeAmount() {
   const possibleAmount = suggestionAmount.value;
   if (
     isNaN(possibleAmount) ||
-    Number(possibleAmount) > 10 ||
+    Number(possibleAmount) > 8 ||
     Number(possibleAmount) < 1
   ) {
-    alert("Please enter a number between 1 and 10");
+    alert("Insira um número entre 1 e 8");
     return;
   }
-  amount = suggestionAmount.value;
-  alert("Amount changed to " + amount);
+  trackAmount = suggestionAmount.value;
+  sliderValue.textContent = "Buscar " + trackAmount + (trackAmount == 1 ? " Música" : " Músicas");
 }
+
+async function isLogged() {
+  var logged = false;
+  await fetch('https://api.spotify.com/v1/me', {
+    headers: { 'Authorization': 'Bearer ' + accessToken }
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error && data.error.status === 401) {
+        logged = false;
+      } else {
+        logged = true;
+      }
+    })
+    .catch(err => {
+      logged = false;
+    });
+
+  return logged;
+}
+
